@@ -1,0 +1,81 @@
+{%extends 'Dashboard/base.html'%}
+{%block title_block %} Suppliers {%endblock%}
+
+{%block content%}
+ <!-- Start::app-content -->
+ <div class="main-content app-content">
+    <div class="container-fluid">
+
+        <!-- PAGE-HEADER -->
+        <div class="page-header">
+          <h1 class="page-title my-auto">Suppliers List</h1>
+          
+        </div>
+        <!-- PAGE-HEADER END -->
+
+
+        <!-- Start:: row-1 -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-3 d-flex justify-content-between">
+                             <!-- Display Messages -->
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }} mt-2">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            <!-- Search functionality -->
+                            <form action="" method="get">
+                                <div class="input-group w-50">
+                                    <input type="text" class="form-control" placeholder="Search customer by name, phone, or email" aria-label="Search" value="{{ query }}">
+                                    <!-- Use the btn-lg class for a larger button -->
+                                    <button class="btn btn-outline-secondary btn-sm btn-lg" type="submit" id="button-search">Search</button>
+                                </div>
+                            </form>
+                            
+                            <!-- Add button -->
+                            <a href="{% url 'city_register' %}" class="btn btn-primary btn-sm">
+                                <i class="ri-add-fill"></i> Add New city
+                            </a>  
+                        </div>
+                        
+                        <!-- Table -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-nowrap w-100" id="userlist-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Selection</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Assuming you have at least one customer to display -->
+                                    {% for city in cities %}
+                                    <tr>
+                                        <td><input type="checkbox" class="form-check-input" value="{{ customer.id }}"></td>
+                                        <td>{{ city.name }}</td>
+                                        <td class="align-middle">
+                                            <div class="btn-group align-top">
+                                                <a href="{% url 'city_update' city.id %}" class="btn btn-sm btn-outline-light btn-svg" role="button">
+                                                    <i class="ri-edit-line"></i> Edit
+                                                </a> 
+                                               
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End::app-content -->
+{%endblock%}

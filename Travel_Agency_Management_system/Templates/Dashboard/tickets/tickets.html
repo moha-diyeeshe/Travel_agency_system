@@ -1,0 +1,97 @@
+{% extends 'Dashboard/base.html' %}
+{% block title_block %} Ticket Bookings {% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+
+        <!-- PAGE-HEADER -->
+        <div class="page-header">
+            <h1 class="page-title my-auto">Ticket Bookings List</h1>
+        </div>
+        <!-- PAGE-HEADER END -->
+
+        <!-- Start:: row-1 -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                           <!-- Success and Error Messages -->
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }}">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        <div class="mb-3 d-flex justify-content-between">
+                            <!-- Search functionality -->
+                            <form action="{% url 'list_tickets' %}" method="get" class="input-group w-50">
+                                <input type="text" class="form-control" placeholder="Search by ticket PNR, customer name, or destination" name="query">
+                                <button class="btn btn-outline-secondary" type="submit">Search</button>
+                            </form>
+                            <!-- Add button -->
+                            <a href="{% url 'ticket_register' %}" class="btn btn-primary btn-sm">
+                                <i class="ri-add-fill"></i> Add New Booking
+                            </a>
+                        </div>
+
+                        <!-- Table -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-nowrap w-100" id="ticketlist-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">PNR</th>
+                                        <th scope="col">passenger name</th>
+                                        <th scope="col">From-To</th>
+                                        <th scope="col">age</th>
+                                        <th scope="col">Travel Date</th>
+                                        <th scope="col">Airline</th>
+                                        <th scope="col">commision</th>
+                                        <th scope="col">Public fare</th>
+                                        <th scope="col">total cost</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Reference or customer</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ticket in tickets %}
+                                    <tr>
+                                        <td>{{ ticket.pnr }}</td>
+                                        <td>{{ ticket.passenger_name }}</td>
+                                        <td>{{ ticket.from_city.name }}-{{ ticket.destination.name }}</td>
+                                        <td>{{ ticket.age_category }}</td>
+                                        <td>{{ ticket.travel_date|date:"d-m-Y" }}</td>
+                                        <td>{{ ticket.supplier }}</td>
+                                        <td>{{ ticket.commission }}</td>
+                                        <td>{{ ticket.fare }}</td>
+                                        <td>{{ ticket.total_price }}</td>
+                                        {% if ticket.status == "confirmed" %}
+                                            <td><span class="badge bg-success rounded-pill">{{ ticket.status|upper }}</span></td>
+                                        {% elif ticket.status == "canceled" %}
+                                            <td><span class="badge bg-danger rounded-pill">{{ ticket.status|upper }}</span></td>
+                                        {% else %}
+                                            <td><span class="badge bg-warning rounded-pill">{{ ticket.status|upper }}</span></td>
+                                        {% endif %}
+                                        <td>{{ ticket.customer.name  }}</td>
+                                        <td class="align-middle">
+                                            <div class="btn-group align-top">
+                                                <a href="{% url 'update_tickets' ticket.id %}" class="btn btn-sm btn-outline-light btn-svg" role="button">
+                                                    <i class="ri-edit-line"></i> Edit
+                                                </a>                                                                                          
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End:: row-1 -->
+    </div>
+</div>
+{% endblock %}

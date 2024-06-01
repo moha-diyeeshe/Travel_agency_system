@@ -1,0 +1,50 @@
+{% extends 'Dashboard/base.html' %}
+{% block title_block %} Update Supplier Information {% endblock %}
+
+{% block content %}
+
+<div class="main-content app-content">
+    <div class="container-fluid">
+
+        <div class="page-header">
+            <h1 class="page-title my-auto">Update city </h1>
+        </div>
+        <!-- ROW-START -->
+        <div class="row align-items-center">
+            <div class="col-xl-6">
+                <div class="card">
+                    <div class="card-header justify-content-between d-sm-flex d-block">
+                        <div class="card-title">
+                            Update city
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Display Messages -->
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} mt-2">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="name" class="form-label">city Name</label>
+                                <input type="text" class="form-control text-uppercase" id="name" name="name" placeholder="Enter the supplier name" value="{{ form.name.value|default_if_none:supplier.name }}" required>
+                                {% if form.name.errors %}
+                                    <div class="alert alert-danger">
+                                        {{ form.name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

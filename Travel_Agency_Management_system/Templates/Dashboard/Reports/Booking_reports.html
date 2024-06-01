@@ -1,0 +1,129 @@
+{% extends 'Dashboard/base.html' %}
+
+{% block title_block %} Invoice {% endblock %}
+{%load static%}
+
+{% block extra_css %}  <link rel="stylesheet" href="{% static 'assets/reports/booking_report.css'%}"> {%endblock%}
+{% block content %}
+
+
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <form action="" method="get">
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="form-label">From Date</label>
+                    <input type="date" class="form-control text-uppercase" name="startDate" value="{{ start_date }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">To Date</label>
+                    <input type="date" class="form-control text-uppercase" name="endDate" value="{{ end_date }}">
+                </div>
+                <div class="col-md-3 gy-4">
+                    <button type="submit" class="btn btn-primary">Find</button>
+                </div>
+            </div>
+        </form>
+        <div class="invoice-container">
+            <div class="header">
+                <img src="{% static 'assets/logo.jpeg' %}" alt="Company Logo">
+                <div class="status"></div>
+            </div>
+
+            <div class="invoice-info">
+                <div>
+                    <strong>Goolwayne Travel Agency</strong><br>
+                    Address TRA-PIANA Mogadishu Somalia<br>
+                    618044914
+                </div>
+                <div class inv-info>
+                    <strong>Report Period:</strong><br>
+                    From: {{ start_date }}<br>
+                    To: {{ end_date }}<br>
+                    <strong class="invoice"> Expense Report</strong><br>
+                </div>
+            </div>
+            <h1 class="text-center text-danger">Visa bookings</h1>
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>Applicant Name</th>
+                        <th>Country</th>
+                        <th>Customer</th>
+                        <th>Visa Fee</th>
+                        <th>Commission</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in visa_bookings %}
+                    <tr>
+                        <td>{{ booking.name|upper }}</td>
+                        <td>{{ booking.country |upper }}</td>
+                        <td>{{ booking.customer.name|upper }}</td>
+                        <td>{{ booking.visa_fee|upper }}</td>
+                        <td>${{ booking.commission }}</td>
+                        <td>${{ booking.visa_fee | add:booking.commission }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h1 class="text-center text-danger">Ticket bookings</h1>
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                         <th>Passenger Name</th>
+                        <th>Country</th>
+                        <th>Customer</th>
+                        <th>Visa Fee</th>
+                        <th>status</th>
+                        <th>fare</th>
+                        <th>Commission</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in ticket_bookings %}
+                        <tr>
+                            <td>{{ booking.passenger_name|upper }}</td>
+                            <td>{{ booking.supplier |upper }}</td>
+                             <td>{{ booking.travel_date|upper }}</td>
+                            <td>{{ booking.from_city.name|upper }}-{{ booking.destination.name|upper }}</td>
+                            <td>{{ booking.status }}</td>
+                            <td>{{ booking.fare }}</td>
+                            <td>${{ booking.commission }}</td>
+                            <td>${{ booking.fare | add:booking.commission }}</td>
+                        </tr>
+                    {% endfor %}
+                    <!-- Summary directly under the Amount column -->
+                    <tr class="invoice-summary">
+                        <td colspan="7" style="text-align: right;">Total fares:</td>
+                        <td>${{ total_fares }}</td>
+                    </tr>
+                    <tr class="invoice-summary">
+                        <td colspan="7" style="text-align: right;">Total commisions:</td>
+                        <td>${{ total_commissions }}</td>
+                    </tr>
+                    <tr class="invoice-summary">
+                        <td colspan="7" style="text-align: right;">Total amount:</td>
+                        <td>${{ total_fares|add:total_commissions }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="no-print">
+                <button onclick="printInvoice()">Print Invoice</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_script %}
+<script>
+    function printInvoice() {
+        window.print();
+    }
+</script>
+{% endblock %}

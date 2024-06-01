@@ -1,0 +1,138 @@
+{% extends 'Dashboard/base.html' %}
+{% block title_block %} Invoice List {% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+
+        <!-- PAGE-HEADER -->
+        <div class="page-header">
+            <h1 class="page-title my-auto">Invoice List</h1>
+            <div class="page-header-breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="javascript:void(0);">
+                            <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm5 15h-2v-6H9v6H7v-7.81l5-4.5 5 4.5V18z"></path>
+                                <path d="M7 10.19V18h2v-6h6v6h2v-7.81l-5-4.5z" opacity=".3"></path>
+                            </svg>
+                            <span class="breadcrumb-icon"> Pages</span>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="javascript:void(0);">Invoice</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Invoice List</li>
+                </ol>
+            </div>
+        </div>
+        <!-- PAGE-HEADER END -->
+
+        <!-- Start:: row-1 -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col mb-4">
+                                <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#invoiceModal"><i class="fe fe-plus"></i> Add New Invoice</a>
+                                <div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="invoiceModalLabel">Add New Invoice</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="btn-group-vertical w-100">
+                                                    <a href="{% url 'incomplete_transactions' %}" class="btn btn-primary">Complete Payment</a>
+                                                    <a href="{% url 'select_customer' %}" class="btn btn-secondary">New Payment</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-auto mb-4">
+                                <div class="input-group w-auto">
+                                    <button aria-label="button" class="btn btn-light bg-white border-end-0" type="button"><i class="fe fe-search"></i></button>
+                                    <input type="text" class="form-control border-start-0" placeholder="Search Invoice">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="e-table">
+                            <div class="table-responsive table-lg">
+                                <table class="table card-table table-vcenter text-nowrap border" id="invoice-list">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">Invoice No</th>
+                                            <th scope="col">Amount</th>
+                                            <th scope="col">Generate Date</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Customer</th>
+                                            <th scope="col">Options</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for invoice in invoices %}
+                                        <tr>
+                                            <td class="align-middle">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value="option2">
+                                                </label>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="d-flex">
+                                                    <div class="mt-1">
+                                                        <a class="btn-link" href="{% url 'view_invoice' invoice.id %}">INVOICE #{{ invoice.reference_number }}</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-nowrap align-middle"><span class="fw-bold">${{ invoice.total_amount }}</span></td>
+                                            <td class="text-nowrap align-middle"><span>{{ invoice.transaction_date|date:"d M Y" }}</span></td>
+                                            {% if invoice.status == "paid" %}
+                                            <td><span class="badge bg-success rounded-pill">PAID</span></td>
+                                            {% elif invoice.status == "pending" %}
+                                                <td><span class="badge bg-danger rounded-pill">PENDING</span></td>
+                                            {% else %}
+                                                <td><span class="badge bg-warning rounded-pill">PARTIAL</span></td>
+                                            {% endif %}
+                                        
+                                            <td class="text-nowrap align-middle">
+                                                {{ invoice.customer.name }}
+                                            </td>
+                                            <td>
+                                                <div class="">
+                                                    <a href="javascript:void(0)" class="btn btn-light btn-sm" data-bs-toggle="dropdown" aria-expanded="false">Options <i class="fa fa-angle-down"></i></a>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="{% url 'view_invoice' invoice.id %}"><i class="fe fe-eye me-2 d-inline-flex"></i> View</a>
+                                                        <a class="dropdown-item" href="javascript:void(0);"><i class="fe fe-share me-2 d-inline-flex"></i> Send</a>
+                                                        <a class="dropdown-item" href="#"><i class="fe fe-edit me-2 d-inline-flex"></i> Edit</a>
+                                                        <a class="dropdown-item" href="#"><i class="fe fe-trash me-2 d-inline-flex"></i> Delete</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End:: row-1 -->
+
+    </div>
+</div>
+{% endblock %}
+{% block extra_script%}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{%endblock%}

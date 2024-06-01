@@ -1,0 +1,100 @@
+{% extends 'Dashboard/base.html' %}
+{% load static %}  <!-- Load static to use in the template if needed -->
+
+{% block title_block %}Visa Booking{% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <div class="page-header">
+            <h1 class="page-title">Visa Booking Form</h1>
+        </div>
+
+        <!-- Display any messages -->
+       
+
+        <!-- Form to submit visa booking -->
+        <form action="{% url 'visa_booking_register' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row mb-3">
+                <div class="col-md-2">
+                    <label for="age_group" class="form-label">Age Group</label>
+                    <select class="form-select" id="age_group" name="age_group" required>
+                        {% for value, display in age_choices %}
+                            <option value="{{ value }}">{{ display }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="name" class="form-label text-uppercase">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="nationality" class="form-label text-uppercase">NATIONALITY</label>
+                    <input type="text" class="form-control" id="nationality" name="nationality" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="country" class="form-label">Country</label>
+                    <input type="text" class="form-control text-uppercase" id="country" name="country" required>
+                </div>
+                <div class="col-md-2">
+                    <label for="departure_date" class="form-label text-uppercase">Departure Date</label>
+                    <input type="date" class="form-control text-uppercase" id="departure_date" name="departure_date" required>
+                </div>
+                <div class="col-md-2">
+                    <label for="visa_fee" class="form-label text-uppercase">Visa Fee</label>
+                    <input type="number" class="form-control text-uppercase" id="visa_fee" name="visa_fee" value="0" >
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-2">
+                    <label for="commission" class="form-label text-uppercase">Commission</label>
+                    <input type="number" class="form-control text-uppercase" id="commission" name="commission" value="0" >
+                </div>
+                <div class="col-md-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="tel" class="form-control text-uppercase" id="phone" name="phone" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="photo" class="form-label text-uppercase">Photo</label>
+                    <input type="file" class="form-control text-uppercase" id="photo" name="photo" accept="image/png, image/jpeg">
+                </div>
+                <div class="col-md-3">
+                    <label for="passport_copy" class="form-label text-uppercase">Passport Copy</label>
+                    <input type="file" class="form-control text-uppercase" id="passport_copy" name="passport_copy" accept=" .pdf">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label text-uppercase">Status</label>
+                    <select class="form-select text-uppercase" name="status">
+                        <option value="pending" selected>
+                            Pending
+                        </option>
+                    </select>                            
+                </div>
+            </div>
+
+            
+
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label for="customer" class="form-label">Customer</label>
+                    <select class="form-select text-uppercase" id="customer" name="customer" required>
+                        <option value="" disabled selected>Select a Customer</option>
+                        {% for customer in customers %}
+                            <option value="{{ customer.id }}">{{ customer.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Submit Booking</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

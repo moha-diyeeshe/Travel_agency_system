@@ -1,0 +1,89 @@
+<!-- edit_user.html -->
+{% extends 'Dashboard/base.html' %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <div class="page-header">
+            <h1 class="page-title my-auto">Edit User</h1>
+            <!-- Breadcrumb and other headers -->
+        </div>
+
+        <form action="{% url 'edit_user' user_to_edit.id %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-header justify-content-between d-sm-flex d-block">
+                            <div class="card-title">
+                                Edit User Details
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Display general form errors (non-field errors) -->
+                            {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Username</label>
+                                    <input type="text" name="username" class="form-control" value="{{ form.username.value }}" placeholder="Username">
+                                    {% if form.username.errors %}
+                                        <div class="alert alert-danger">{{ form.username.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" name="full_name" class="form-control" value="{{ form.full_name.value }}" placeholder="Full Name">
+                                    {% if form.full_name.errors %}
+                                        <div class="alert alert-danger">{{ form.full_name.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Password</label>
+                                    <input type="password" name="password1" class="form-control" placeholder="Password">
+                                    {% if form.password1.errors %}
+                                        <div class="alert alert-danger">{{ form.password1.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Confirm Password</label>
+                                    <input type="password" name="password2" class="form-control" placeholder="Confirm Password">
+                                    {% if form.password2.errors %}
+                                        <div class="alert alert-danger">{{ form.password2.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Role</label>
+                                    <select name="role" class="form-select">
+                                        <option value="Admin" {% if user_to_edit.groups.filter(name='Admin').exists %}selected{% endif %}>Admin</option>
+                                        <option value="Staff" {% if user_to_edit.groups.filter(name='Staff').exists %}selected{% endif %}>Staff</option>
+                                    </select>
+                                    {% if form.role.errors %}
+                                        <div class="alert alert-danger">{{ form.role.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <!-- Form Submission -->
+                            <div class="row">
+                                <div class="col-12 d-flex justify-content-start">
+                                    <button type="submit" class="btn btn-primary me-2">Save changes</button>
+                                    <button type="button" class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

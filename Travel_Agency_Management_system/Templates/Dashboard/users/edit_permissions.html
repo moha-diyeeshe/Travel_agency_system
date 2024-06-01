@@ -1,0 +1,59 @@
+{% extends 'Dashboard/base.html' %}
+{% block title_block %} Edit Permissions {% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <div class="page-header d-flex justify-content-between align-items-center">
+            <h1 class="page-title my-auto">Edit Permissions for {{ user.username }}</h1>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-nowrap w-100" id="permissions-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="border-bottom-0 w-75">Permission</th>
+                                            <th class="border-bottom-0 w-75">Codename</th>
+                                            <th class="border-bottom-0 w-75">App</th>
+                                            <th class="border-bottom-0 w-25">Assigned</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for perm in permissions %}
+                                        <tr>
+                                            <td class="align-middle">{{ perm.name }}</td>
+                                            <td class="align-middle">{{ perm.codename }}</td>
+                                            <td class="align-middle">{{ perm.content_type.app_label}}</td>
+                                            <td class="align-middle">
+                                                <input type="checkbox" name="permissions" value="{{ perm.id }}" {% if perm in user_permissions %}checked{% endif %}>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

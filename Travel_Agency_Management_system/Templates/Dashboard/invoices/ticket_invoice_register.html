@@ -1,0 +1,37 @@
+{% extends 'Dashboard/base.html' %}
+{% block title_block %} Select Customer {% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <div class="page-header">
+            <h1 class="page-title my-auto">Select Customer</h1>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label>Select Customer</label>
+                    <select class="form-select" id="customer" name="customer">
+                        {% for customer in customers %}
+                        <option value="{{ customer.id }}">{{ customer.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label>the type of invoice</label>
+                    <select class="form-select" id="transaction_type" name="transaction_type">
+                        <option value="" selected disabled>select the type of invoice</option>
+                        <option value="ticket">Ticket</option>
+                        <option value="visa">Visa</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Select Customer</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

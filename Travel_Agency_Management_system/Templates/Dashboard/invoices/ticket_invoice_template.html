@@ -1,0 +1,84 @@
+{% extends 'Dashboard/base.html' %}
+
+{% block title_block %} Invoice {% endblock %}
+{%load static%}
+
+{% block extra_css %}  <link rel="stylesheet" href="{% static 'assets/invoices/ticket_invoice_template.css'%}"> {%endblock%}
+{% block content %}
+
+
+<div class="main-content app-content">
+    <div class="container-fluid">
+
+        <div class="invoice-container">
+            <div class="header">
+                <img src="{% static 'assets/logo.jpeg' %}" alt="Company Logo">
+                <div class="status text-uppercase"> {{status}}</div>
+            </div>
+
+            <div class="invoice-info">
+                <div>
+                    <strong>Goolwayne Travel Agency</strong><br>
+                    Address TRA-PIANA Mogadishu Somalia<br>
+                    618044914
+                </div>
+                <div class inv-info>
+                    <strong>Customer:</strong> {{ customer_name }}<br>
+                    <strong class="invoice">Invoice #{{ invoice_no }}</strong><br>
+                    <strong>customer no :</strong> {{ customer_no }} <br>
+                    <strong>Due Date:</strong>{{due_date}}
+                </div>
+            </div>
+
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>Passenger</th>
+                        <th>Airline</th>
+                        <th>Departure</th>
+                        <th>Route</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.passenger_name|upper }}</td>
+                        <td>{{ booking.supplier |upper }}</td>
+                        <td>{{ booking.travel_date|upper }}</td>
+                        <td>{{ booking.from_city.name|upper }}-{{ booking.destination.name|upper }}</td>
+                        <td>${{ booking.total_cost }}</td>
+                    </tr>
+                    {% endfor %}
+                    <!-- Summary directly under the Amount column -->
+                    <tr class="invoice-summary">
+                        <td colspan="4" style="text-align: right;">Subtotal:</td>
+                        <td>${{ subtotal }}</td>
+                    </tr>
+                    <tr class="invoice-summary">
+                        <td colspan="4" style="text-align: right;">Paid:</td>
+                        <td>${{ partial }}</td>
+                    </tr>
+                    <tr class="invoice-summary">
+                        <td colspan="4" style="text-align: right;">Balance:</td>
+                        <td>${{ remaining }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="no-print">
+                <button onclick="printInvoice()">Print Invoice</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_script %}
+<script>
+    function printInvoice() {
+        window.print();
+    }
+</script>
+{% endblock %}

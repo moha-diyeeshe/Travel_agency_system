@@ -1,0 +1,40 @@
+{% extends 'Dashboard/base.html' %}
+
+{% block content %}
+
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <div class="container">
+            <h2>Activity Log</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>Content Type</th>
+                        <th>Object ID</th>
+                        <th>Description</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <td>{{ log.user.username }}</td>
+                        <td>{{ log.action }}</td>
+                        <td>{{ log.content_type }}</td>
+                        <td>{{ log.object_id }}</td>
+                        <td>{{ log.description }}</td>
+                        <td>{{ log.timestamp|date:"Y-m-d H:i:s" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">No activities found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'Dashboard/base.html' %}
+{% block title_block %} User Management {% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <div class="page-header d-flex justify-content-between align-items-center">
+            <h1 class="page-title my-auto">User Management</h1>
+            <div>
+                <button type="button" class="btn btn-primary" onclick="location.href='{% url 'user_register' %}'">Add New User</button>
+            </div>
+        </div>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-nowrap w-100" id="user-list-table">
+                                <thead>
+                                    <tr>
+                                        <th class="align-top border-bottom-0 wd-5"></th>
+                                        <th class="border-bottom-0 w-20">Username</th>
+                                        <th class="border-bottom-0 w-15">Full Name</th>
+                                        <th class="border-bottom-0 w-15"> Email</th>
+                                        <th class="border-bottom-0 w-15">Password </th>
+                                        
+                                        <th class="border-bottom-0 w-15">Date Joined</th>
+                                        <th class="border-bottom-0 w-10">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                    <tr>
+                                        <td class="align-middle">
+                                            <input type="checkbox" class="form-check-input">
+                                        </td>
+                                        <td class="align-middle ">{{ user.username }}</td>
+                                        <td class="align-middle text-uppercase">{{ user.get_full_name }}</td>
+                                        <td class="align-middle text-uppercase">{{ user.email }}</td>
+                                        <td class="align-middle">
+                                            <a href="{% url 'admin_change_user_password' user.id%}">change password</a></td>
+                                        <td class="align-middle text-uppercase">{{ user.created_at }}</td>
+                                        <td class="align-middle">
+                                            <div class="btn-group align-top">
+                                                <button class="btn btn-sm btn-outline-light btn-svg text-uppercase" type="button" > Edit</button>
+                                                <button class="btn btn-sm btn-outline-light btn-svg text-uppercase" type="button" onclick="location.href='{% url 'assign_groups_to_user' user.id %}'">Assign group</button>
+                                                <button class="btn btn-sm btn-outline-light btn-svg text-uppercase" type="button" >Delete</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{%extends 'Dashboard/base.html'%}
+{%block title_block %} Customers {%endblock%}
+
+{%block content%}
+ <!-- Start::app-content -->
+ <div class="main-content app-content">
+    <div class="container-fluid">
+
+        <!-- PAGE-HEADER -->
+        <div class="page-header">
+          <h1 class="page-title my-auto">Customers List</h1>
+          
+        </div>
+        <!-- PAGE-HEADER END -->
+
+
+        <!-- Start:: row-1 -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-3 d-flex justify-content-between">
+                            <!-- Search functionality -->
+                            <form action="{% url 'customers' %}" method="get" class="input-group w-50">
+                                <input type="text" class="form-control" placeholder="Search by  customer name, phone or Email" name="query">
+                                <button class="btn btn-outline-secondary" type="submit">Search</button>
+                            </form>
+                            <!-- Add button -->
+                            <a href="{% url 'customer_register' %}" class="btn btn-primary btn-sm">
+                                <i class="ri-add-fill"></i> Add New Customer
+                            </a>                            
+                        </div>
+                        
+                        <!-- Table -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-nowrap w-100" id="userlist-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Selection</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Phone</th>
+                                        <th scope="col">Reference Name</th>
+                                        <th scope="col">Reference Phone</th>
+                                        <th scope="col">Registered At</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Assuming you have at least one customer to display -->
+                                    {% for customer in customers %}
+                                    <tr>
+                                        <td><input type="checkbox" class="form-check-input" value="{{ customer.id }}"></td>
+                                        <td>{{ customer.name }}</td>
+                                        <td>{{ customer.phone }}</td>
+                                        <td>{{ customer.reference_name }}</td>
+                                        <td>{{ customer.reference_phone }}</td>
+                                        <td>{{ customer.created_at|date:"d-m-Y" }}</td>
+                                        <td class="align-middle">
+                                            <div class="btn-group align-top">
+                                                <a href="{% url 'customer_update' customer.id %}" class="btn btn-sm btn-outline-light btn-svg" role="button">
+                                                    <i class="ri-edit-line"></i> Edit
+                                                </a>                                                                                          
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End::app-content -->
+{%endblock%}

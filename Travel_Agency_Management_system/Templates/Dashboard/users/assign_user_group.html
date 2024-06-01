@@ -1,0 +1,26 @@
+{% extends 'Dashboard/base.html' %}
+{% block title_block %} Assign Groups {% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container">
+        <h1>Assign Groups to {{ user.username }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Groups:</label>
+                {% for group in form.fields.groups.queryset %}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="groups" value="{{ group.id }}" id="group_{{ group.id }}"
+                        {% if group in user.groups.all %} checked {% endif %}>
+                    <label class="form-check-label" for="group_{{ group.id }}">
+                        {{ group.name }}
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary">Update Groups</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

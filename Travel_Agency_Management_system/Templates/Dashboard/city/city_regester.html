@@ -1,0 +1,44 @@
+{% extends 'Dashboard/base.html' %}
+{% block title_block %} Suppliers {% endblock %}
+
+{% block content %}
+
+<div class="main-content app-content">
+    <div class="container-fluid">
+
+        <div class="page-header">
+            <h1 class="page-title my-auto">city Registration Form</h1>
+        </div>
+        <!-- ROW-START -->
+        <div class="row align-items-center">
+            <div class="col-xl-6">
+                <div class="card">
+                    <div class="card-header justify-content-between d-sm-flex d-block">
+                        <div class="card-title">
+                            Supplier Registration
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Display Messages -->
+                        
+                        <form method="post" action="{% url 'city_register' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="name" class="form-label">city Name</label>
+                                <input type="text" class="form-control text-uppercase" id="name" name="name" placeholder="Enter the supplier name" value="{{ form.name.value|default_if_none:'' }}" required>
+                                {% if form.name.errors %}
+                                    <div class="alert alert-danger">
+                                        {{ form.name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

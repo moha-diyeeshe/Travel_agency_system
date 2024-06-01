@@ -1,0 +1,71 @@
+{% extends 'Dashboard/base.html' %}
+{% block title_block %}Update Asset{% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <div class="page-header">
+            <h1 class="page-title my-auto">Update Asset Details</h1>
+            <div class="page-header-breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'dashboard' %}">
+                            <i class="ri-home-4-line"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Update Asset</li>
+                </ol>
+            </div>
+        </div>
+
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Edit Asset Details</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="asset_name" class="form-label">Asset Name</label>
+                            <input type="text" class="form-control" id="asset_name" name="asset_name" value="{{ form.instance.asset_name }}">
+                            {% if form.asset_name.errors %}
+                                <div class="alert alert-danger">{{ form.asset_name.errors.as_text }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="purchase_date" class="form-label">Purchase Date</label>
+                            <input type="date" class="form-control" id="purchase_date" name="purchase_date" value="{{ form.instance.purchase_date|date:'Y-m-d' }}">
+                            {% if form.purchase_date.errors %}
+                                <div class="alert alert-danger">{{ form.purchase_date.errors.as_text }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="purchase_price" class="form-label">Purchase Price</label>
+                            <input type="number" class="form-control" id="purchase_price" name="purchase_price" value="{{ form.instance.purchase_price }}">
+                            {% if form.purchase_price.errors %}
+                                <div class="alert alert-danger">{{ form.purchase_price.errors.as_text }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description">{{ form.instance.description }}</textarea>
+                            {% if form.description.errors %}
+                                <div class="alert alert-danger">{{ form.description.errors.as_text }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">Update</button>
+                            <button type="button" class="btn btn-secondary ml-2">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

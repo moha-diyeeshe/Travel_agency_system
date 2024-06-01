@@ -1,0 +1,87 @@
+{% extends 'Dashboard/base.html' %}
+{% block title_block %} Invoice List {% endblock %}
+
+{% block content %}
+<!-- Start::app-content -->
+<div class="main-content app-content">
+    <div class="container-fluid">
+
+        <!-- PAGE-HEADER -->
+        <div class="page-header d-flex justify-content-between align-items-center">
+            
+            <div>
+                <button type="button" class="btn btn-primary" onclick="location.href='{% url 'register_employee' %}'">Add New Employee</button>
+            </div>
+            <h1 class="page-title my-auto ">Employee List</h1>
+            <div class="d-flex align-items-center">
+                <input type="text" class="form-control mr-2" placeholder="Search employees..." aria-label="Search">
+            </div>
+        </div>
+        <!-- PAGE-HEADER END -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <!-- Start:: row-1 -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-nowrap w-100" id="employee-list-table">
+                                <thead>
+                                    <tr>
+                                        <th class="align-top border-bottom-0 wd-5"></th>
+                                        <th class="border-bottom-0 w-20">Employee Name</th>
+                                        <th class="border-bottom-0 w-15">Addtress</th>
+                                        <th class="border-bottom-0 w-15">Date of Joining</th>
+                                        <th class="border-bottom-0 w-30">Salary</th>
+                                        <th class="border-bottom-0 w-30">Phone</th>
+                                        <th class="border-bottom-0 w-30">user name</th>
+                                        <th class="border-bottom-0 w-10">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for employee in employees %}
+                                    <tr>
+                                        <td class="align-middle">
+                                            <input type="checkbox" class="form-check-input">
+                                        </td>
+                                        <td class="align-middle">
+                                            <div class="d-flex">
+                                                <img src="{{ employee.profile_photo.url }}" class="avatar avatar-rounded avatar-md d-block" alt="">
+                                                <div class="ms-3 mt-1">
+                                                    <h6 class="mb-0 fw-bold text-uppercase">{{ employee.name }}</h6>
+                                                    <small class="text-uppercase">{{ employee.title }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-nowrap align-middle text-uppercase">{{ employee.address }}</td>
+                                        <td class="text-nowrap align-middle text-uppercase">{{ employee.created_at }}</td>
+                                        <td class="text-nowrap align-middle text-uppercase">{{ employee.salary }}</td>
+                                        <td class="text-nowrap align-middle text-uppercase">{{ employee.phone }}</td>
+                                        <td class="text-nowrap align-middle text-uppercase">{{ employee.user }}</td>
+                                        <td class="align-middle">
+                                            <div class="btn-group align-top">
+                                                <button class="btn btn-sm btn-outline-light btn-svg text-uppercase" type="button" onclick="location.href='{% url 'employee_update' employee.id %}'">Edit</button>
+                                                <button class="btn btn-sm btn-outline-light btn-svg text-uppercase" type="button">Delete</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End:: row-1 -->
+
+    </div>
+</div>
+<!-- End::app-content -->
+{%endblock%}

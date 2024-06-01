@@ -1,0 +1,113 @@
+{% extends 'Dashboard/base.html' %}
+{% block title_block %} Visa Bookings {% endblock %}
+{% load static%}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+
+        <!-- PAGE-HEADER -->
+        <div class="page-header">
+            <h1 class="page-title my-auto">Visa Bookings List</h1>
+        </div>
+        <!-- PAGE-HEADER END -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <!-- Start:: row-1 -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-3 d-flex justify-content-between">
+                            <!-- Search functionality -->
+                            <form action="{% url 'visa_bookings_list' %}" method="get" class="input-group w-50">
+                                <input type="text" class="form-control" placeholder="Search by customer name or country" name="query">
+                                <button class="btn btn-outline-secondary" type="submit">Search</button>
+                            </form>
+                            <!-- Add button -->
+                            <a href="{% url 'visa_booking_register' %}" class="btn btn-primary btn-sm">
+                                <i class="ri-add-fill"></i> Add New Visa Booking
+                            </a>
+                        </div>
+
+                        <!-- Table -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-nowrap w-100" id="visalist-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Applicant Name</th>
+                                        <th scope="col">Country</th>
+                                        <th scope="col">Age Group</th>
+                                        <th scope="col">Departure Date</th>
+                                        <th scope="col">Visa Fee</th>
+                                        <th scope="col">Commission</th>
+                                        <th scope="col">Total Cost</th>
+                                        <th scope="col">Visa status Cost</th>
+                                        <th scope="col">Photo</th>
+                                        <th scope="col">Passport_copy</th>
+                                        <th scope="col">customer or reference Name</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for visa in visas %}
+                                    <tr>
+                                        <td class="align-middle">
+                                            <div class="d-flex">
+                                                <img src="{{ visa.photo.url }}" class="avatar avatar-rounded avatar-md d-block" alt="">
+                                                <div class="ms-3 mt-1">
+                                                    <h6 class="mb-0 fw-bold text-uppercase">{{ visa.name }}</h6>
+                                                    <small class="text-uppercase"></small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ visa.country }}</td>
+                                        <td>{{ visa.age_group }}</td>
+                                        <td>{{ visa.departure_date|date:"d-m-Y" }}</td>
+                                        <td>{{ visa.visa_fee }}</td>
+                                        <td>{{ visa.commission }}</td>
+                                        <td>{{ visa.total_cost }}</td>
+                                        {% if visa.status == "confirmed" %}
+                                            <td><span class="badge bg-success rounded-pill">{{ visa.status|upper }}</span></td>
+                                        {% elif visa.status == "canceled" %}
+                                            <td><span class="badge bg-danger rounded-pill">{{ visa.status|upper }}</span></td>
+                                        {% else %}
+                                            <td><span class="badge bg-warning rounded-pill">{{ visa.status|upper }}</span></td>
+                                        {% endif %}
+                                        
+                                        <td>
+                                             <!-- Displaying the image -->
+                                            <div class="d-flex">
+                                               <a href="{{ visa.photo.url }}" download> <img src="{{ visa.photo.url }}" class="avatar avatar-rounded avatar-md d-block" alt=""></a>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <!-- Link to download the passport copy -->
+                                            <a href="{{ visa.passport_copy.url }}" download>Download Passport Copy</a>
+                                        </td> <!-- Assuming you handle total_cost calculation similarly as ticket booking -->
+                                        <td>{{ visa.customer.name }}</td>
+                                        <td class="align-middle">
+                                            <div class="btn-group align-top">
+                                                <a href="{% url 'update_visa_bookings' visa.id %}" class="btn btn-sm btn-outline-light btn-svg" role="button">
+                                                    <i class="ri-edit-line"></i> Edit
+                                                </a>                                                                                          
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End:: row-1 -->
+    </div>
+</div>
+{% endblock %}

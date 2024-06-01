@@ -1,0 +1,89 @@
+{% extends 'Dashboard/base.html' %}
+
+{% block title_block %}Supplier Earnings Report{% endblock %}
+{% load static %}
+
+{% block extra_css %}  
+<link rel="stylesheet" href="{% static 'assets/reports/booking_report.css' %}"> 
+{% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <form action="" method="get" class="form-inline mb-4">
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="form-label" for="search">Search Supplier</label>
+                    <input type="text" class="form-control" id="search" name="search" placeholder="Enter supplier name" value="{{ search_query }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="startDate">From Date</label>
+                    <input type="date" class="form-control text-uppercase" id="startDate" name="startDate" value="{{ start_date|date:'Y-m-d' }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="endDate">To Date</label>
+                    <input type="date" class="form-control text-uppercase" id="endDate" name="endDate" value="{{ end_date|date:'Y-m-d' }}">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary mt-4">Update Report</button>
+                </div>
+            </div>
+        </form>
+        
+
+        <div class="invoice-container">
+            <div class="header">
+                <img src="{% static 'assets/logo.jpeg' %}" alt="Company Logo">
+                <div class="status"></div>
+            </div>
+
+            <div class="invoice-info">
+                <div>
+                    <strong>Goolwayne Travel Agency</strong><br>
+                    Address: TRA-PIANA, Mogadishu, Somalia<br>
+                    Tel: 618044914
+                </div>
+                <div class="inv-info">
+                    <strong>From:</strong> {{ start_date|date:"d-m-Y" }}<br>
+                    <strong>To:</strong> {{ end_date|date:"d-m-Y" }}<br>
+                    <strong class="invoice"> Supplier Earnings Report</strong><br>
+                </div>
+            </div>
+
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>Supplier Name</th>
+                        <th>Total Earnings</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for supplier in suppliers %}
+                    <tr>
+                        <td>{{ supplier.name }}</td>
+                        <td>${{ supplier.total_fare|default:"0.00" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2">No earnings data available for the selected period.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="no-print">
+                <button onclick="printInvoice()">Print Report</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_script %}
+<script>
+    function printInvoice() {
+        window.print();
+    }
+</script>
+{% endblock %}

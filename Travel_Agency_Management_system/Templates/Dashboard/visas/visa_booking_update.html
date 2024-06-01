@@ -1,0 +1,105 @@
+{% extends 'Dashboard/base.html' %}
+{% load static %}
+
+{% block title_block %}Update Visa Booking{% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <div class="page-header">
+            <h1 class="page-title">Update Visa Booking</h1>
+        </div>
+      
+        
+
+        <!-- Form to update visa booking -->
+        <form action="{% url 'update_visa_bookings' visa.id %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row mb-3">
+                <div class="col-md-2">
+                    <label for="age_group" class="form-label text-uppercase">Age Group</label>
+                    <select class="form-select" id="age_group" name="age_group">
+                        {% for value, name in age_choices %}
+                            <option value="{{ value }}" {% if visa.age_group == value %}selected{% endif %}>
+                                {{ name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="name" class="form-label text-uppercase">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ visa.name }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="nationality" class="form-label text-uppercase">NATIONALITY</label>
+                    <input type="text" class="form-control" id="nationality" name="nationality" value="{{ visa.nationality }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="country" class="form-label text-uppercase">Country</label>
+                    <input type="text" class="form-control" id="country" name="country" value="{{ visa.country }}">
+                </div>
+                <div class="col-md-2">
+                    <label for="departure_date" class="form-label">Departure Date</label>
+                    <input type="date" class="form-control" id="departure_date" name="departure_date" value="{{ visa.departure_date|date:'Y-m-d' }}">
+                </div>
+                <div class="col-md-2">
+                    <label for="visa_fee" class="form-label">Visa Fee</label>
+                    <input type="number" class="form-control" id="visa_fee" name="visa_fee" value="{{ visa.visa_fee }}">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-2">
+                    <label for="commission" class="form-label">Commission</label>
+                    <input type="number" class="form-control" id="commission" name="commission" value="{{ visa.commission }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" value="{{ visa.phone }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="photo" class="form-label">Photo</label>
+                    <input type="file" class="form-control" id="photo" name="photo" value="{{ visa.photo.url}}">
+                    Current: <a href="{{ visa.photo.url }}">Download Current Photo</a>
+                </div>
+                <div class="col-md-3">
+                    <label for="passport_copy" class="form-label">Passport Copy</label>
+                    <input type="file" class="form-control" id="passport_copy" name="passport_copy" value="{{ visa.passport_copy.url }}">
+                    Current: <a href="{{ visa.passport_copy.url }}" download>Download Current Passport Copy</a>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-2">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" name="status">
+                        {% for value, name in form.fields.status.choices %}
+                            <option value="{{ value }}" {% if value == visa.status %}selected{% endif %}>
+                                {{ name }}
+                            </option>
+                        {% endfor %}
+                    </select>                            
+                </div>
+                <div class="col-md-3">
+                    <label for="customer" class="form-label">Customer</label>
+                    <select class="form-select" id="customer" name="customer">
+                        <option value="">Select a Customer</option>
+                        {% for customer in customers %}
+                            <option value="{{ customer.id }}" {% if visa.customer.id == customer.id %}selected{% endif %}>
+                                {{ customer.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Update Booking</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

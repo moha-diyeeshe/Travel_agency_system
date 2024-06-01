@@ -1,0 +1,35 @@
+{% extends 'Dashboard/base.html' %}
+
+{% block title_block %}Incomplete Transactions{% endblock %}
+
+{% block content %}
+    <div class="main-content app-content">
+        <div class="container-fluid">
+            <h1>Incomplete Transactions</h1>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Total Amount</th>
+                        <th>Paid Amount</th>
+                        <th>Remaining Amount</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.customer.name }}</td>
+                        <td>{{ transaction.total_amount }}</td>
+                        <td>{{ transaction.paid_amount }}</td>
+                        <td>{{ transaction.remaining }}</td>
+                        <td>
+                            <a href="{% url 'complete_payment' transaction.id %}" class="btn btn-primary">Complete Payment</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

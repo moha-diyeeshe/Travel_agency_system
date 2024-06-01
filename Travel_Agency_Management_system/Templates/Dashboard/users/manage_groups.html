@@ -1,0 +1,69 @@
+{% extends 'Dashboard/base.html' %}
+{% block title_block %} Groups {% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <!-- PAGE-HEADER -->
+        <div class="page-header">
+            <h1 class="page-title my-auto">Groups List</h1>
+        </div>
+        <!-- PAGE-HEADER END -->
+
+        <!-- Start:: row-1 -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-3 d-flex justify-content-between">
+                            <!-- Search functionality -->
+                            <form action="{% url 'manage_groups' %}" method="get" class="input-group w-50">
+                                <input type="text" class="form-control" placeholder="Search by group name" name="query">
+                                <button class="btn btn-outline-secondary" type="submit">Search</button>
+                            </form>
+                            <!-- Add button -->
+                            <a href="{% url 'create_group' %}" class="btn btn-primary btn-sm">
+                                <i class="ri-add-fill"></i> Add New Group
+                            </a>
+                        </div>
+                        
+                        <!-- Table -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-nowrap w-100" id="groups-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Group Name</th>
+                                        <th scope="col">Permissions</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for group in groups %}
+                                    <tr>
+                                        <td>{{ group.name }}</td>
+                                        <td>
+                                            <ul>
+                                                {% for perm in group.permissions.all %}
+                                                    {{ perm.name }}
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                        <td class="align-middle">
+                                            <div class="btn-group align-top">
+                                                <a href="{% url 'edit_group_permissions' group.id %}" class="btn btn-sm btn-outline-primary" role="button">
+                                                    <i class="ri-shield-keyhole-line"></i> Manage Permissions
+                                                </a>                                                                                          
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

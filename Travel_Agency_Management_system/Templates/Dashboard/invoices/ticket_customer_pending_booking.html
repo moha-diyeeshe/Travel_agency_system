@@ -1,0 +1,72 @@
+{% extends 'Dashboard/base.html' %}
+{% block title_block %} Ticket Registration {% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <div class="page-header">
+            <h1 class="page-title my-auto">booking invoice regestration</h1>
+        </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                     {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <form id="updateBookingForm" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="customer_id" value="{{ customer.id }}">
+
+            {% if no_pending_bookings %}
+                <div class="alert alert-info">No pending bookings for this customer.</div>
+            {% else %}
+                <div class="row mb-3">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Selection</th>
+                                <th scope="col">Passenger Name</th>
+                                <th scope="col">From - To</th>
+                                <th scope="col">Travel Date</th>
+                                <th scope="col">Fare</th>
+                                <th scope="col">Commission</th>
+                                <th scope="col">Total Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in pending_ticket_bookings %}
+                            <tr>
+                                <td><input type="checkbox" class="form-check-input" name="bookings" value="{{ booking.id }}"></td>
+                                <td>{{ booking.passenger_name }}</td>
+                                <td>{{ booking.from_city }} - {{ booking.destination }}</td>
+                                <td>{{ booking.travel_date }}</td>
+                                <td>{{ booking.fare }}</td>
+                                <td>{{ booking.commission }}</td>
+                                <td>{{ booking.total_cost }}</td>
+                            </tr>
+                            {% endfor %}
+                            <tr aria-colspan="7">{{b}}</tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label>Payment Method:</label>
+                        {{ payment_form.payment_method }}
+                    </div>
+                    <div class="col-md-3">
+                        <label>Amount:</label>
+                        {{ payment_form.paid_amount }}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <button type="submit" class="btn btn-primary">Add these to the invoice</button>
+                </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'Dashboard/base.html' %}
+
+{% block title_block %}Record Expense{% endblock %}
+
+{% block content %}
+    <div class="main-content app-content">
+        <div class="container-fluid">
+            <h1>Record Expense</h1>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Expense Details</h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row gy-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" name="category" required>
+                                    <option value="" selected disabled>Select expense type</option>
+                                    {% for value, name in Expense_category %}
+                                        <option value="{{ value }}">{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                                {% if form.category.errors %}
+                                    <div class="alert alert-danger">
+                                        {{ form.category.errors }}
+                                    </div>
+                                 {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Amount</label>
+                                <input type="number" class="form-control" name="amount" step="0.01" min="0" required>
+                                {% if form.amount.errors %}
+                                    <div class="alert alert-danger">
+                                        {{ form.amount.errors }}
+                                    </div>
+                                 {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Payment Method</label>
+                                <select class="form-select" name="payment_method">
+                                    <option value="" selected disabled>Select Payment type</option>
+                                    {% for value, name in payment_methods %}
+                                        <option value="{{ value }}">{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                                {% if form.payment_method.errors %}
+                                    <div class="alert alert-danger">
+                                        {{ form.payment_method.errors }}
+                                    </div>
+                                 {% endif %}
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" name="description" rows="3"></textarea>
+                            </div>
+                            {% if form.description.errors %}
+                                    <div class="alert alert-danger">
+                                        {{ form.description.errors }}
+                                    </div>
+                                 {% endif %}
+                        </div>
+                        <button type="submit" class="btn btn-success mt-4">Submit Expense</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

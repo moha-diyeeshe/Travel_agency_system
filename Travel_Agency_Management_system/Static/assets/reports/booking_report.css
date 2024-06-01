@@ -1,0 +1,108 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    color: #333;
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.invoice-container {
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 20px;
+    background: #FFF;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header img {
+    height: 60px;
+}
+
+.header .status {
+    font-size: 18px;
+    color: #FF0000; /* Bright red color for 'UNPAID' status */
+    font-weight: bold;
+}
+
+.invoice-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 5px;
+    column-gap: 90px;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.invoice-table th, .invoice-table td {
+    border: 1px solid #ddd; /* Light grey borders for a more subtle look */
+    padding: 8px;
+    text-align: left;
+}
+.invoice {
+    color: #FF0000;
+}
+
+.invoice-table th {
+    background-color: #f9f9f9; /* Light grey background for header */
+    border-bottom: 2px solid #ccc; /* Slightly thicker bottom border for header cells */
+}
+
+.invoice-summary th, .invoice-summary td {
+    padding: 8px;
+    text-align: left;
+    border: none;
+}
+
+.no-print {
+    text-align: center;
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50; /* Green background for the print button */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    
+    
+    .invoice-container, .invoice-container * {
+        visibility: visible;
+    }
+
+    .invoice-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+
+    .no-print {
+        display: none;
+    }
+}

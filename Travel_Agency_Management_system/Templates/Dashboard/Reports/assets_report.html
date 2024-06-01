@@ -1,0 +1,93 @@
+{% extends 'Dashboard/base.html' %}
+
+{% block title_block %}Assets Report{% endblock %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'assets/reports/booking_report.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <form action="" method="get">
+            <div class="page-header">
+                <h1 class="page-title">Assets Report</h1>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="form-label">From Date</label>
+                    <input type="date" class="form-control text-uppercase" name="startDate" value="{{ start_date }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">To Date</label>
+                    <input type="date" class="form-control text-uppercase" name="endDate" value="{{ end_date }}">
+                </div>
+                <div class="col-md-3 gy-4">
+                    <button type="submit" class="btn btn-primary">Find</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="invoice-container">
+            <div class="header">
+                <img src="{% static 'assets/logo.jpeg' %}" alt="Company Logo">
+            </div>
+
+            <div class="invoice-info">
+                <div>
+                    <strong>Goolwayne Travel Agency</strong><br>
+                    Address: TRA-PIANA, Mogadishu, Somalia<br>
+                    Tel: 618044914
+                </div>
+                <div>
+                    <strong>Report Period:</strong><br>
+                    From: {{ start_date }}<br>
+                    To: {{ end_date }}<br>
+                    <strong class="invoice"> Assets Report</strong><br>
+                </div>
+            </div>
+
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Asset Name</th>
+                        <th>Description</th>
+                        <th>Purchase Price</th>
+                        <th>Purchased By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for asset in assets %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ asset.asset_name }}</td>
+                        <td>{{ asset.description }}</td>
+                        <td>${{ asset.purchase_price }}</td>
+                        <td>{{ asset.user.username }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No assets found for the selected period.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="no-print">
+                <button onclick="printInvoice()">Print Report</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_script %}
+<script>
+    function printInvoice() {
+        window.print();
+    }
+</script>
+{% endblock %}

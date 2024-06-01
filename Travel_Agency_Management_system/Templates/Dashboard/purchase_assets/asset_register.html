@@ -1,0 +1,76 @@
+{% extends 'Dashboard/base.html' %}
+{% load static %}  <!-- Load static to use in the template if needed -->
+
+{% block title_block %}Asset Registration{% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <div class="page-header">
+            <h1 class="page-title">Asset Registration Form</h1>
+        </div>
+
+        <!-- Display any messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Form to submit asset registration -->
+        <form action="{% url 'register_asset' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="asset_name" class="form-label">Asset Name</label>
+                    <input type="text" class="form-control" id="asset_name" name="asset_name">
+                    {% if form.asset_name.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.asset_name.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-4">
+                    <label for="purchase_date" class="form-label">Purchase Date</label>
+                    <input type="date" class="form-control" id="purchase_date" name="purchase_date">
+                    {% if form.purchase_date.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.purchase_date.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-4">
+                    <label for="purchase_price" class="form-label">Purchase Price</label>
+                    <input type="number" class="form-control" id="purchase_price" name="purchase_price" step="0.01">
+                    {% if form.purchase_price.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.purchase_price.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-8">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description"></textarea>
+                    {% if form.description.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.description.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Register Asset</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends 'Dashboard/base.html' %}
+{% block title_block %} Ticket Registration {% endblock %}
+
+{% block content %}
+
+<div class="main-content app-content">
+    <div class="container-fluid">
+
+        <div class="page-header">
+            <h1 class="page-title my-auto">Ticket Registration Form</h1>
+            <div class="page-header-breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="javascript:void(0);">
+                            <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm5 15h-2v-6H9v6H7v-7.81l5-4.5 5 4.5V18z"></path>
+                                <path d="M7 10.19V18h2v-6h6v6h2v-7.81l-5-4.5z" opacity=".3"></path>
+                            </svg>
+                            <span class="breadcrumb-icon"> Tickets</span>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="javascript:void(0);">Form Elements</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Inputs</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Success and Error Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form action="{% url 'ticket_register' %}" method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-header justify-content-between d-sm-flex d-block">
+                            <div class="card-title">
+                                Input Types
+                            </div>
+                        </div>
+                        <div class="card-body">
+
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <select class="form-select" id="select-airline" name="airline">
+                                        <option value="" selected disabled>Select Airline</option>
+                                        {% for supplier in suppliers %}
+                                            <option value="{{ supplier.id }}">{{ supplier.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                
+                            <div class="row gy-4">
+                                <!-- Traveler Information Inputs -->
+                                <div class="col-md-1">
+                                    <label class="form-label">Age</label>
+                                    <select class="form-select" name="age_category">
+                                        <option value="ADT">Adult</option>
+                                        <option value="CHD">Child</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">PNR</label>
+                                    <input type="text" class="form-control" name="pnr">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Passenger Name</label>
+                                    <input type="text" class="form-control" name="passenger_name">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Travel Date</label>
+                                    <input type="date" class="form-control" name="travel_date">
+                                </div>
+                                <div class="col-md-1">
+                                    <label class="form-label">Fare</label>
+                                    <input type="number" class="form-control" value="0" min="0" name="fare">
+                                </div>
+                                <div class="col-md-1">
+                                    <label class="form-label">Commission</label>
+                                    <input type="number" class="form-control" value="0" min="0" name="commission">
+                                </div>
+                                <div class="col-md-1">
+                                    <label class="form-label">Tax</label>
+                                    <input type="number" class="form-control" value="0" min="0" name="tax">
+                                </div>
+                                <!-- Journey Details Inputs -->
+                                <div class="col-md-2">
+                                    <label class="form-label">Sell Fare</label>
+                                    <input type="number" class="form-control" value="0" min="0" name="sell_fare">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">From</label>
+                                    <select class="form-select" name="from_city">
+                                        <option value="" selected disabled>Select City</option>
+                                        {% for city in city %}
+                                            <option value="{{ city.id }}">{{ city.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Destination</label>
+                                    <select class="form-select" name="destination">
+                                        <option value="" selected disabled>Select Destination</option>
+                                        {% for city in city %}
+                                            <option value="{{ city.id }}">{{ city.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Back To</label>
+                                    <select class="form-select" name="back_to">
+                                        <option value="" selected disabled>Select City</option>
+                                        {% for city in city %}
+                                            <option value="{{ city.id }}">{{ city.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Phone</label>
+                                    <input type="tel" class="form-control" name="phone">
+                                </div>
+                                <!-- Additional Selection -->
+                                <div class="col-md-3">
+                                    <label class="form-label">Customer</label>
+                                    <select class="form-select" name="customer">
+                                        <option value="" selected disabled>Select Customer</option>
+                                        {% for customer in customers %}
+                                            <option value="{{ customer.id }}">{{ customer.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Booking Date</label>
+                                    <input type="date" class="form-control" name="booking_date" value="{{ today|date:'Y-m-d' }}">
+                                </div>
+                            </div>
+                            <!-- Form Submission -->
+                            <div class="row">
+                                <div class="col-12 d-flex justify-content-start">
+                                    <button type="submit" class="btn btn-primary me-2">Save</button>
+                                    <button type="button" class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+

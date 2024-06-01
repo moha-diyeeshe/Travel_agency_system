@@ -1,0 +1,88 @@
+{% extends 'Dashboard/base.html' %}
+{% block title_block %} Update Customer Information {% endblock %}
+
+{% block content %}
+
+<div class="main-content app-content">
+    <div class="container-fluid">
+
+        <div class="page-header">
+            <h1 class="page-title my-auto">Update Customer Information</h1>
+        </div>
+
+        <!-- Display messages like success or error from backend -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Form starts here, adjust the action URL as per your routing -->
+        <form action="{% url 'customer_update' customer.id %}" method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Customer Details</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row gy-4">
+                                <!-- Customer Name -->
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                                    <label for="input-name" class="form-label">Customer Name</label>
+                                    <input type="text" class="form-control" id="input-name" name="name" placeholder="Enter Name" value="{{ form.name.value|default:'' }}">
+                                    {% if form.name.errors %}
+                                        <div class="alert alert-danger">{{ form.name.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <!-- Customer Number -->
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                                    <label for="input-number" class="form-label">Customer Number</label>
+                                    <input type="number" class="form-control" id="input-number" name="phone" placeholder="Enter Phone Number" value="{{ form.phone.value|default:'' }}">
+                                    {% if form.phone.errors %}
+                                        <div class="alert alert-danger">{{ form.phone.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <!-- Customer Email -->
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                                    <label for="input-email" class="form-label">Customer Email</label>
+                                    <input type="email" class="form-control" id="input-email" name="email" placeholder="email@example.com" value="{{ form.email.value|default:'' }}">
+                                    {% if form.email.errors %}
+                                        <div class="alert alert-danger">{{ form.email.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <!-- Reference Name -->
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                                    <label for="input-ref-name" class="form-label">Reference Name</label>
+                                    <input type="text" class="form-control" id="input-ref-name" name="reference_name" placeholder="Reference Name" value="{{ form.reference_name.value|default:'' }}">
+                                    {% if form.reference_name.errors %}
+                                        <div class="alert alert-danger">{{ form.reference_name.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <!-- Reference Phone -->
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                                    <label for="input-ref-phone" class="form-label">Reference Phone</label>
+                                    <input type="number" class="form-control" id="input-ref-phone" name="reference_phone" placeholder="Reference Phone" value="{{ form.reference_phone.value|default:'' }}">
+                                    {% if form.reference_phone.errors %}
+                                        <div class="alert alert-danger">{{ form.reference_phone.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <!-- Submit Button -->
+                                    <button type="submit" class="btn btn-primary mt-3">Update Information</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
