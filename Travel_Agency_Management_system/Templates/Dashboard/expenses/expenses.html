@@ -32,6 +32,7 @@
                             <table class="table table-bordered text-nowrap w-100" id="expense-list-table">
                                 <thead>
                                     <tr>
+                                        <th scope="col">Who paid</th>
                                         <th scope="col">Date</th>
                                         <th scope="col">Category</th>
                                         <th scope="col">Amount</th>
@@ -41,25 +42,39 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for expense in expenses %}
+                                    {% for expense in page_obj %}
                                     <tr>
-                                        <td>{{ expense.date_created }}</td>
+                                        <td>${{ expense.paid_by }}</td>
+                                        <td>{{ expense.date_created|date:"Y-m-d" }}</td>
                                         <td>{{ expense.get_category_display }}</td>
-                                        <td>{{ expense.amount }}</td>
+                                        <td>${{ expense.amount }}</td>
                                         <td>{{ expense.description }}</td>
                                         <td>{{ expense.get_payment_method_display }}</td>
                                         <td class="align-middle">
-                                            <div class="btn-group align-top">
-                                                <a href="{% url 'update_expense' expense.id %}" class="btn btn-sm btn-outline-light btn-svg" role="button">
-                                                    <i class="ri-edit-line"></i> Edit
-                                                </a>                                                                                          
-                                            </div>
+                                            <a href="{% url 'update_expense' expense.id %}" class="btn btn-sm btn-outline-secondary">
+                                                <i class="ri-edit-line"></i> Edit
+                                            </a>
                                         </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- Pagination -->
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-end">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&query={{ query }}{% endif %}">Previous</a></li>
+                                {% endif %}
+                                {% for num in page_obj.paginator.page_range %}
+                                    <li class="page-item {% if num == page_obj.number %}active{% endif %}"><a class="page-link" href="?page={{ num }}{% if query %}&query={{ query }}{% endif %}">{{ num }}</a></li>
+                                {% endfor %}
+                                {% if page_obj.has_next %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&query={{ query }}{% endif %}">Next</a></li>
+                                {% endif %}
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>

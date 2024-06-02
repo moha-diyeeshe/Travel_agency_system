@@ -1,11 +1,10 @@
 {% extends 'Dashboard/base.html' %}
 {% block title_block %} Visa Bookings {% endblock %}
-{% load static%}
+{% load static %}
 
 {% block content %}
 <div class="main-content app-content">
     <div class="container-fluid">
-
         <!-- PAGE-HEADER -->
         <div class="page-header">
             <h1 class="page-title my-auto">Visa Bookings List</h1>
@@ -43,66 +42,77 @@
                                         <th scope="col">Applicant Name</th>
                                         <th scope="col">Country</th>
                                         <th scope="col">Age Group</th>
-                                        <th scope="col">Departure Date</th>
+                                        <th scope="col">Nationality</th>
+                                        <th scope="col">Issue Date</th>
                                         <th scope="col">Visa Fee</th>
                                         <th scope="col">Commission</th>
                                         <th scope="col">Total Cost</th>
-                                        <th scope="col">Visa status Cost</th>
+                                        <th scope="col">Visa status</th>
                                         <th scope="col">Photo</th>
-                                        <th scope="col">Passport_copy</th>
-                                        <th scope="col">customer or reference Name</th>
+                                        <th scope="col">Passport Copy</th>
+                                        <th scope="col">Customer or Reference Name</th>
                                         <th scope="col">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for visa in visas %}
+                                    {% for visa in page_obj %}
                                     <tr>
-                                        <td class="align-middle">
-                                            <div class="d-flex">
-                                                <img src="{{ visa.photo.url }}" class="avatar avatar-rounded avatar-md d-block" alt="">
-                                                <div class="ms-3 mt-1">
-                                                    <h6 class="mb-0 fw-bold text-uppercase">{{ visa.name }}</h6>
-                                                    <small class="text-uppercase"></small>
-                                                </div>
-                                            </div>
-                                        </td>
+                                        <td>{{ visa.customer.name }}</td>
                                         <td>{{ visa.country }}</td>
                                         <td>{{ visa.age_group }}</td>
+                                        <td>{{ visa.nationality }}</td>
                                         <td>{{ visa.departure_date|date:"d-m-Y" }}</td>
                                         <td>{{ visa.visa_fee }}</td>
                                         <td>{{ visa.commission }}</td>
                                         <td>{{ visa.total_cost }}</td>
-                                        {% if visa.status == "confirmed" %}
-                                            <td><span class="badge bg-success rounded-pill">{{ visa.status|upper }}</span></td>
-                                        {% elif visa.status == "canceled" %}
-                                            <td><span class="badge bg-danger rounded-pill">{{ visa.status|upper }}</span></td>
-                                        {% else %}
-                                            <td><span class="badge bg-warning rounded-pill">{{ visa.status|upper }}</span></td>
-                                        {% endif %}
-                                        
+                                        <td>{{ visa.status|title }}</td>
                                         <td>
-                                             <!-- Displaying the image -->
-                                            <div class="d-flex">
-                                               <a href="{{ visa.photo.url }}" download> <img src="{{ visa.photo.url }}" class="avatar avatar-rounded avatar-md d-block" alt=""></a>
-                                            </div>
+                                            {% if visa.photo %}
+                                                <a href="{{ visa.photo.url }}" download="VisaPhoto_{{ visa.id }}">
+                                                    <img src="{{ visa.photo.url }}" class="avatar avatar-rounded avatar-md" alt="Photo">
+                                                </a>
+                                            {% else %}
+                                                <span>No photo available</span>
+                                            {% endif %}
                                         </td>
                                         <td>
-                                            <!-- Link to download the passport copy -->
-                                            <a href="{{ visa.passport_copy.url }}" download>Download Passport Copy</a>
-                                        </td> <!-- Assuming you handle total_cost calculation similarly as ticket booking -->
+                                            {% if visa.passport_photo %}
+                                                <a href="{{ visa.passport_photo.url }}" download="PassportPhoto">Download</a>
+                                            {% else %}
+                                                <span>No passport photo available</span>
+                                            {% endif %}
+                                        </td>
                                         <td>{{ visa.customer.name }}</td>
-                                        <td class="align-middle">
-                                            <div class="btn-group align-top">
-                                                <a href="{% url 'update_visa_bookings' visa.id %}" class="btn btn-sm btn-outline-light btn-svg" role="button">
-                                                    <i class="ri-edit-line"></i> Edit
-                                                </a>                                                                                          
-                                            </div>
+                                        <td>
+                                            <a href="{% url 'update_visa_bookings' visa.id %}" class="btn btn-sm btn-outline-light">
+                                                <i class="ri-edit-line"></i> Edit
+                                            </a>
                                         </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
+                        <!-- Pagination -->
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-end">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}&query={{ query }}">Previous</a>
+                                    </li>
+                                {% endif %}
+                                {% for num in page_obj.paginator.page_range %}
+                                    <li class="page-item {% if num == page_obj.number %}active{% endif %}">
+                                        <a class="page-link" href="?page={{ num }}&query={{ query }}">{{ num }}</a>
+                                    </li>
+                                {% endfor %}
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}&query={{ query }}">Next</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>

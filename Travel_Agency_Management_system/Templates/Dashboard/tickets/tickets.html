@@ -4,19 +4,18 @@
 {% block content %}
 <div class="main-content app-content">
     <div class="container-fluid">
-
         <!-- PAGE-HEADER -->
         <div class="page-header">
             <h1 class="page-title my-auto">Ticket Bookings List</h1>
         </div>
         <!-- PAGE-HEADER END -->
-
         <!-- Start:: row-1 -->
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                           <!-- Success and Error Messages -->
+                        <div class="mb-3 d-flex justify-content-between">
+                            <!-- Success and Error Messages -->
                             {% if messages %}
                                 {% for message in messages %}
                                     <div class="alert alert-{{ message.tags }}">
@@ -24,7 +23,6 @@
                                     </div>
                                 {% endfor %}
                             {% endif %}
-                        <div class="mb-3 d-flex justify-content-between">
                             <!-- Search functionality -->
                             <form action="{% url 'list_tickets' %}" method="get" class="input-group w-50">
                                 <input type="text" class="form-control" placeholder="Search by ticket PNR, customer name, or destination" name="query">
@@ -35,7 +33,6 @@
                                 <i class="ri-add-fill"></i> Add New Booking
                             </a>
                         </div>
-
                         <!-- Table -->
                         <div class="table-responsive">
                             <table class="table table-bordered text-nowrap w-100" id="ticketlist-table">
@@ -56,7 +53,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for ticket in tickets %}
+                                    {% for ticket in page_obj %}
                                     <tr>
                                         <td>{{ ticket.pnr }}</td>
                                         <td>{{ ticket.passenger_name }}</td>
@@ -74,12 +71,12 @@
                                         {% else %}
                                             <td><span class="badge bg-warning rounded-pill">{{ ticket.status|upper }}</span></td>
                                         {% endif %}
-                                        <td>{{ ticket.customer.name  }}</td>
+                                        <td>{{ ticket.customer.name }}</td>
                                         <td class="align-middle">
                                             <div class="btn-group align-top">
                                                 <a href="{% url 'update_tickets' ticket.id %}" class="btn btn-sm btn-outline-light btn-svg" role="button">
                                                     <i class="ri-edit-line"></i> Edit
-                                                </a>                                                                                          
+                                                </a>
                                             </div>
                                         </td>
                                     </tr>
@@ -87,6 +84,26 @@
                                 </tbody>
                             </table>
                         </div>
+                        <!-- Pagination -->
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-end">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}&query={{ query }}" tabindex="-1">Previous</a>
+                                    </li>
+                                {% endif %}
+                                {% for num in page_obj.paginator.page_range %}
+                                    <li class="page-item {% if num == page_obj.number %}active{% endif %}">
+                                        <a class="page-link" href="?page={{ num }}&query={{ query }}">{{ num }}</a>
+                                    </li>
+                                {% endfor %}
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}&query={{ query }}">Next</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>

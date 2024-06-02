@@ -3,6 +3,7 @@ from django.shortcuts import render,get_object_or_404,redirect
 from django.db.models import Q, Count, Sum
 
 
+from django.core.paginator import Paginator
 from Agency import models
 from Agency.forms import AssetForm, BookingForm, BookingSelectionForm, CompletePaymentForm, CustomerRegistrationForm, CustomerUpdateForm, DateSelectionForm, EmployeeForm, ExpenseForm, PaymentForm, SupplierRegistrationForm, SupplierUpdateForm,  VisaBookingForm, cityForm
 from Agency.models import Asset, City,  Customer, Employee, Expense, Payment, Supplier, TicketBooking, Transaction, VisaBooking 
@@ -31,23 +32,27 @@ from django.db.models.functions import TruncMonth
 @login_required
 @permission_required('Agency.view_customer', raise_exception=True)
 def customers_list(request):
-   
-    # Start with a query that will fetch all customers by default
+    # Start with a query that will fetch all customers by default, ordered by creation date
     customers = Customer.objects.all().order_by('-created_at')
+    
     # Get the search query from the request, if provided
     query = request.GET.get('query', '')
-
 
     # Filter the customer list if a query is present
     if query:
         customers = customers.filter(
             Q(phone__icontains=query) | 
-            Q(name__icontains=query) 
+            Q(name__icontains=query)
         )
-         
+    
+    # Setup pagination
+    paginator = Paginator(customers, 10)  # Show 10 customers per page.
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     # Render the customers list (filtered or unfiltered) to the template
-    return render(request, 'Dashboard/customers/customers.html', {'customers': customers, 'query': query})
+    # Include page_obj to provide paginated customers and the query for persistence in the search bar
+    return render(request, 'Dashboard/customers/customers.html', {'page_obj': page_obj, 'query': query})
 
 
 
@@ -142,22 +147,25 @@ def supplier_registration(request):
 @permission_required('Agency.view_supplier', raise_exception=True)
 #suppliers list
 def suppliers_list(request):
-    # Start with a query that will fetch all customers by default
-    suppliers = Supplier.objects.all()
-    
     # Get the search query from the request, if provided
     query = request.GET.get('query', '')
-
-    # Filter the customer list if a query is present
+    
+    # Start with a query that fetches all suppliers or filters them based on the search query
     if query:
-        suppliers = Supplier.filter(
+        suppliers = Supplier.objects.filter(
             Q(name__icontains=query) | 
             Q(email__icontains=query)
         )
+    else:
+        suppliers = Supplier.objects.all()
+    
+    # Set up pagination: Display 10 suppliers per page
+    paginator = Paginator(suppliers, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-    # Render the customers list (filtered or unfiltered) to the template
-    return render(request, 'Dashboard/suppliers/suppliers.html', {'suppliers': suppliers, 'query': query})
-
+    # Render the suppliers list (filtered or unfiltered) to the template
+    return render(request, 'Dashboard/suppliers/suppliers.html', {'page_obj': page_obj, 'query': query})
 
 
 
@@ -229,23 +237,27 @@ def list_tickets(request):
     query = request.GET.get('query', '')
     if query:
         tickets = TicketBooking.objects.filter(
-            customer__name__icontains=query) | TicketBooking.objects.filter(
-            pnr__icontains=query) | TicketBooking.objects.filter(
-            destination__name__icontains=query)
+            Q(customer__name__icontains=query) | 
+            Q(pnr__icontains=query) | 
+            Q(destination__name__icontains=query)
+        )
     else:
         tickets = TicketBooking.objects.annotate(
-        total_price=ExpressionWrapper(
-            Coalesce(F('fare'), 0) + Coalesce(F('commission'), 0) + Coalesce(F('tax'), 0),
-            output_field=DecimalField()
-        )
-    ).order_by('-total_price')
+            total_price=ExpressionWrapper(
+                Coalesce(F('fare'), 0) + Coalesce(F('commission'), 0) + Coalesce(F('tax'), 0),
+                output_field=DecimalField()
+            )
+        ).order_by('-total_price')
     
+    # Set up pagination
+    paginator = Paginator(tickets, 2)  # Shows 10 tickets per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'tickets': tickets
+        'page_obj': page_obj
     }
     return render(request, 'Dashboard/tickets/tickets.html', context)
-
-
 
 
 
@@ -353,21 +365,22 @@ def list_visa_bookings(request):
     else:
         visas = VisaBooking.objects.all()
     
-    # Optional: Add any extra annotations or calculations you need
     visas = visas.annotate(
         total_cost=ExpressionWrapper(
             F('visa_fee') + F('commission'),
             output_field=DecimalField()
         )
     )
-    
+
+    # Set up pagination
+    paginator = Paginator(visas, 10)  # Display 10 visas per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'visas': visas
+        'page_obj': page_obj
     }
     return render(request, 'Dashboard/visas/visa_booking_list.html', context)
-
-
-
 
 
 
@@ -380,7 +393,7 @@ def city_register(request):
             new_city = form.save(commit=False)
             new_city.user = request.user
             new_city.save()
-            redirect('customers')
+            redirect('cities')
     else:
         form = cityForm()
     return render(request,'Dashboard/city/city_regester.html')
@@ -388,9 +401,20 @@ def city_register(request):
 @login_required
 @permission_required('Agency.view_city', raise_exception=True)
 def city_view(request):
-    cities = City.objects.all()
-    return render(request,'Dashboard/city/manage_cities.html',{'cities':cities})
+    # Start with a query that fetches all cities
+    query = request.GET.get('query', '')
+    if query:
+        cities = City.objects.filter(Q(name__icontains=query))
+    else:
+        cities = City.objects.all()
 
+    # Set up pagination
+    paginator = Paginator(cities, 10)  # Show 10 cities per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Render the city list to the template with pagination and the current query
+    return render(request, 'Dashboard/city/manage_cities.html', {'page_obj': page_obj, 'query': query})
 
 
 
@@ -686,12 +710,21 @@ def customer_ticket_pending_bookings(request, customer_id):
 @login_required
 @permission_required('Agency.view_transaction', raise_exception=True)
 def invoice_list_view(request):
-    invoices = Transaction.objects.all()
-    return render(request, 'Dashboard/invoices/invoice_list.html', {'invoices': invoices})
+    query = request.GET.get('query', '')
+    if query:
+        invoices = Transaction.objects.filter(
+            Q(customer__name__icontains=query) | 
+            Q(reference_number__icontains=query)
+        )
+    else:
+        invoices = Transaction.objects.all()
 
+    # Pagination setup
+    paginator = Paginator(invoices, 10)  # Display 10 invoices per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-
-
+    return render(request, 'Dashboard/invoices/invoice_list.html', {'page_obj': page_obj})
 
 
 
@@ -943,9 +976,7 @@ def register_employee(request):
     if request.method == 'POST':
         form = EmployeeForm(request.POST, request.FILES)
         if form.is_valid():
-            new_employee = form.save(commit=False)
-            new_employee.user = request.user
-            new_employee.save()
+            form.save()
             messages.success(request, 'Employee registered successfully!')
             return redirect('employee_list')  # Redirect to a success page or another relevant page
     else:
@@ -964,16 +995,23 @@ def register_employee(request):
 def employee_list(request):
     search_query = request.GET.get('search', '')  # Get the search parameter from the URL
     if search_query:
-        # Filter employees based on the search query; adjust fields as necessary
-        employees = Employee.objects.filter(name__icontains=search_query)
+        employees = Employee.objects.filter(
+            Q(name__icontains=search_query) |
+            Q(user__username__icontains=search_query)|
+            Q(phone__icontains=search_query)   # Assuming 'user' is a related field for username
+        )
     else:
         employees = Employee.objects.all()
 
+    # Set up pagination
+    paginator = Paginator(employees, 10)  # Shows 10 employees per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'employees': employees
+        'page_obj': page_obj
     }
     return render(request, 'Dashboard/HR/manage_employees.html', context)
-
 
 
 
@@ -1014,16 +1052,17 @@ def expense_list(request):
         expenses = Expense.objects.filter(
             Q(category__icontains=query) |
             Q(description__icontains=query) |
-            Q(amount__icontains=query)
+            Q(amount__icontains=query)  # Note: filtering by amount might need exact matches unless amount is a CharField
         )
     else:
         expenses = Expense.objects.all()
 
-    return render(request, 'Dashboard/expenses/expenses.html', {'expenses': expenses})
+    # Set up pagination
+    paginator = Paginator(expenses, 10)  # Shows 10 expenses per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-
-
-
+    return render(request, 'Dashboard/expenses/expenses.html', {'page_obj': page_obj})
 
 
 
