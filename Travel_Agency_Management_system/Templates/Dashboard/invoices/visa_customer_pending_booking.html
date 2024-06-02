@@ -52,6 +52,13 @@
                     <div class="col-md-3">
                         <label>Amount:</label>
                         {{ payment_form.paid_amount }}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
 

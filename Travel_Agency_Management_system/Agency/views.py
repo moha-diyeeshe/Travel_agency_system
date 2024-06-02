@@ -33,7 +33,7 @@ from django.db.models.functions import TruncMonth
 def customers_list(request):
    
     # Start with a query that will fetch all customers by default
-    customers = Customer.objects.all()
+    customers = Customer.objects.all().order_by('-created_at')
     # Get the search query from the request, if provided
     query = request.GET.get('query', '')
 
@@ -782,40 +782,50 @@ def complete_payment(request, transaction_id):
         if payment_form.is_valid():
             amount = payment_form.cleaned_data['amount']
             payment_method = payment_form.cleaned_data['payment_method']
-            
-            # Create a new payment record
-            Payment.objects.create(
-                transaction=transaction,
-                amount=amount,
-                payment_method=payment_method,
-                user=request.user 
-            )
-            
-            # Update the transaction
-            transaction.paid_amount += amount
-            transaction.update_status()
-            if transaction.paid_amount >= transaction.total_amount:
-                    transaction.status = 'paid'
-                    transaction.save()
+            remaining = transaction.total_amount - transaction.paid_amount
 
+            if amount > remaining:
+                messages.error(request, 'Paid amount cannot be greater than the remaining amount.')
+                return render(request, 'Dashboard/invoices/ticket_complete_payment.html', {
+                    'transaction': transaction,
+                    'previous_payments': previous_payments,
+                    'payment_form': payment_form,
+                    'remaining_amount': transaction.total_amount - transaction.paid_amount,
+                })
             
-            return redirect('view_invoice', invoice_id=transaction.id)
+            with db_transaction.atomic():
+
+                # Create a new payment record
+                Payment.objects.create(
+                    transaction=transaction,
+                    amount=amount,
+                    payment_method=payment_method,
+                    user=request.user 
+                )
+                
+                # Update the transaction
+                transaction.paid_amount += amount
+                transaction.update_status()
+                if transaction.paid_amount >= transaction.total_amount:
+                        transaction.status = 'paid'
+                        transaction.save()
+
+                
+                return redirect('view_invoice', invoice_id=transaction.id)
      else:
         payment_form = CompletePaymentForm()
-
-     context = {
-        'transaction': transaction,
-        'previous_payments': previous_payments,
-        'payment_form': payment_form,
-        'remaining_amount': transaction.total_amount - transaction.paid_amount,
-     }
     
      # Determine which template to use based on the transaction type
      if transaction.transaction_type == 'ticket':
         template_name = 'Dashboard/invoices/ticket_complete_payment.html'
      elif transaction.transaction_type == 'visa':
         template_name = 'Dashboard/invoices/visa_complete_payment.html'
-     return render(request, 'Dashboard/invoices/ticket_complete_payment.html', context)
+     return render(request, 'Dashboard/invoices/ticket_complete_payment.html', {
+        'transaction': transaction,
+        'previous_payments': previous_payments,
+        'payment_form': payment_form,
+        'remaining_amount': transaction.total_amount - transaction.paid_amount,
+     })
 
 
 
@@ -850,51 +860,61 @@ def customer_pending_visa_bookings(request, customer_id):
 
             selected_bookings = VisaBooking.objects.filter(id__in=selected_booking_ids)
             total_amount = sum(b.visa_fee + b.commission for b in selected_bookings)
+            if amount > total_amount:
+                messages.error(request, 'Paid amount cannot be greater than the total amount.')
+                return render(request, 'Dashboard/invoices/visa_customer_pending_booking.html', {
+                    'customer': customer,
+                    'pending_visa_bookings': pending_visa_bookings,
+                    'no_pending_bookings': no_pending_bookings,
+                    'booking_form': booking_form,
+                    'payment_form': payment_form,
+                })
 
-            # Create a new transaction
-            transaction = Transaction.objects.create(
-                customer=customer,
-                total_amount=total_amount,
-                transaction_type='visa',
-                payment_method=payment_method,
-                paid_amount=amount,
-                user = request.user
-            )
+            with db_transaction.atomic():
+                # Create a new transaction
+                transaction = Transaction.objects.create(
+                    customer=customer,
+                    total_amount=total_amount,
+                    transaction_type='visa',
+                    payment_method=payment_method,
+                    paid_amount=amount,
+                    user = request.user
+                )
 
-            # Create a new payment record
-            Payment.objects.create(
-                transaction=transaction,
-                amount=amount,
-                payment_method=payment_method,
-                user = request.user
-            )
+                # Create a new payment record
+                Payment.objects.create(
+                    transaction=transaction,
+                    amount=amount,
+                    payment_method=payment_method,
+                    user = request.user
+                )
 
-            # Associate bookings with the transaction and update their status
-            for booking in selected_bookings:
-                booking.transaction = transaction
-                booking.status = 'confirmed'
-                booking.save()
+                # Associate bookings with the transaction and update their status
+                for booking in selected_bookings:
+                    booking.transaction = transaction
+                    booking.status = 'confirmed'
+                    booking.save()
 
-            # Update transaction status based on paid amount
-            transaction.update_status()
+                # Update transaction status based on paid amount
+                transaction.update_status()
 
-            # Render the invoice as an HTML page
-            context = {
-                'customer_name': customer.name,
-                'customer_no': customer.phone,
-                'date': transaction.transaction_date.strftime('%d.%m.%Y'),
-                'invoice_no': transaction.reference_number,
-                'transaction_type': transaction.transaction_type,
-                'transaction_no': transaction.id,
-                'bookings': selected_bookings,
-                'subtotal': total_amount,
-                'partial': transaction.paid_amount,
-                'total': transaction.total_amount,
-                'remaining_amount': total_amount - transaction.paid_amount,
-                'path_to_signature': '/path/to/your/signature.png'  # Update with the actual path to the signature
-            }
+                # Render the invoice as an HTML page
+                context = {
+                    'customer_name': customer.name,
+                    'customer_no': customer.phone,
+                    'date': transaction.transaction_date.strftime('%d.%m.%Y'),
+                    'invoice_no': transaction.reference_number,
+                    'transaction_type': transaction.transaction_type,
+                    'transaction_no': transaction.id,
+                    'bookings': selected_bookings,
+                    'subtotal': total_amount,
+                    'partial': transaction.paid_amount,
+                    'total': transaction.total_amount,
+                    'remaining_amount': total_amount - transaction.paid_amount,
+                    'path_to_signature': '/path/to/your/signature.png'  # Update with the actual path to the signature
+                }
 
-            return render(request, 'Dashboard/invoices/visa_invoice_template.html', context)
+                return render(request, 'Dashboard/invoices/visa_invoice_template.html', context)
     else:
         booking_form = BookingSelectionForm(transaction_type='visa')
         payment_form = PaymentForm()

@@ -29,6 +29,13 @@
                     <tr>
                         <td>{{ payment.payment_date }}</td>
                         <td>${{ payment.amount }}</td>
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
                         <td>{{ payment.payment_method }}</td>
                     </tr>
                     {% endfor %}
