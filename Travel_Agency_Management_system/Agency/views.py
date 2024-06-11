@@ -153,11 +153,10 @@ def suppliers_list(request):
     # Start with a query that fetches all suppliers or filters them based on the search query
     if query:
         suppliers = Supplier.objects.filter(
-            Q(name__icontains=query) | 
-            Q(email__icontains=query)
+            Q(name__icontains=query) 
         )
     else:
-        suppliers = Supplier.objects.all()
+        suppliers = Supplier.objects.all().order_by('created_at')
     
     # Set up pagination: Display 10 suppliers per page
     paginator = Paginator(suppliers, 10)
@@ -247,10 +246,10 @@ def list_tickets(request):
                 Coalesce(F('fare'), 0) + Coalesce(F('commission'), 0) + Coalesce(F('tax'), 0),
                 output_field=DecimalField()
             )
-        ).order_by('-total_price')
+        ).order_by('-booking_date')
     
     # Set up pagination
-    paginator = Paginator(tickets, 2)  # Shows 10 tickets per page
+    paginator = Paginator(tickets, 10)  # Shows 10 tickets per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -679,7 +678,7 @@ def customer_ticket_pending_bookings(request, customer_id):
                     'invoice_no': transaction.reference_number,
                     'transaction_type': transaction.transaction_type,
                     'transaction_no': transaction.id,
-                    'ticket_bookings': selected_bookings,
+                    'bookings': selected_bookings,
                     'subtotal': total_amount,
                     'partial': transaction.paid_amount,
                     'total': transaction.total_amount,
@@ -709,7 +708,7 @@ def customer_ticket_pending_bookings(request, customer_id):
 # invoices
 @login_required
 @permission_required('Agency.view_transaction', raise_exception=True)
-def invoice_list_view(request):
+def invoice_list(request):
     query = request.GET.get('query', '')
     if query:
         invoices = Transaction.objects.filter(
@@ -1109,6 +1108,9 @@ def expense_update(request, expense_id):
             updated_expense.save()
             messages.success(request, 'Expense record updates successfully!')
             return redirect('expenses') 
+        else:
+            print("Form is not valid")  # Check what's not valid
+            print(form.errors) 
     else:
         form = ExpenseForm(instance=expense)
     return render(request, 'Dashboard/expenses/expense_payments_update.html',{'form': form})

@@ -29,16 +29,41 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <!-- Search functionality -->
-                        <div class="mb-3 d-flex justify-content-between">
-                            <form action="{% url 'invoice_list' %}" method="get" class="input-group w-50">
-                                <input type="text" class="form-control" placeholder="Search invoice by number or customer" name="query" aria-label="Search Invoices">
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="submit">
-                                        <i class="fe fe-search"></i>
-                                    </button>
+                        <div class="row">
+                            <!-- Search functionality -->
+                            <div class="mb-3 d-flex justify-content-between">
+                                <div class="col mb-4">
+                                    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#invoiceModal"><i class="fe fe-plus"></i> Add New Invoice</a>
+                                    <div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="invoiceModalLabel">Add New Invoice</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="btn-group-vertical w-100">
+                                                        <a href="{% url 'incomplete_transactions' %}" class="btn btn-primary">Complete Payment</a>
+                                                        <a href="{% url 'select_customer' %}" class="btn btn-secondary">New Payment</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </form>
+                                <div class="col col-auto mb-4">
+                                    <form action="{% url 'invoice_list' %}" method="get" class="input-group w-50">
+                                        <input type="text" class="form-control" placeholder="Search invoice by number or customer" name="query" aria-label="Search Invoices">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="submit">
+                                                <i class="fe fe-search"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Table -->
@@ -100,3 +125,8 @@
 </div>
 {% endblock %}
 
+{% block extra_script%}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{%endblock%}

@@ -6,6 +6,7 @@ from . import views
 urlpatterns = [
     path('users/', views.user_list, name='user_list'),
     path('manage-users/', views.manage_users, name='manage_users'),
+    path('edit-user/<int:user_id>/', views.edit_user, name='edit_user'),
     path('edit-permissions/<int:user_id>/', views.edit_permissions, name='user_permissions'),
     path('add-user/', views.user_register, name='user_register'),
     path('add-group/', views.create_group, name='create_group'),

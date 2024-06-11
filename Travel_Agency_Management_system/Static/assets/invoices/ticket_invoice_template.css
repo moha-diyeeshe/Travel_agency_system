@@ -64,11 +64,15 @@ body {
     border-bottom: 2px solid #ccc; /* Slightly thicker bottom border for header cells */
 }
 
+
+
 .invoice-summary th, .invoice-summary td {
     padding: 8px;
     text-align: left;
     border: none;
 }
+
+
 
 .no-print {
     text-align: center;

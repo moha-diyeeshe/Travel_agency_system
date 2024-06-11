@@ -13,7 +13,24 @@
         <div class="invoice-container">
             <div class="header">
                 <img src="{% static 'assets/logo.jpeg' %}" alt="Company Logo">
-                <div class="status text-uppercase"> {{status}}</div>
+                <div class="status text-uppercase 
+                    {% if status == 'pending' %}
+                    text-danger fs-2
+                    {% elif status == 'partial' %}
+                    text-primary fs-2 
+                    {% elif status == 'paid' %}
+                    text-success fs-2
+                    {% endif %}
+                ">
+                    {% if status == 'pending' %}
+                    Unpaid
+                    {% elif status == 'partial' %}
+                    Partial
+                    {% elif status == 'paid' %}
+                    Paid
+                    {% endif %}
+                </div>
+
             </div>
 
             <div class="invoice-info">
@@ -50,6 +67,29 @@
                         <td>${{ booking.total_cost }}</td>
                     </tr>
                     {% endfor %}
+                    <tr class="invoice-summary">
+                        <td colspan="1" style="text-align: right;">Salaam Bank:</td>
+                        <td>33752088</td>
+                        <td colspan="4" style="text-align: right;">Subtotal:</td>
+                        <td>${{ subtotal }}</td>
+                    </tr>
+                    <tr class="invoice-summary">
+                        <td colspan="1" style="text-align: right;">Dahabshiil Bank:</td>
+                        <td>33752088</td>
+                        <td colspan="4" style="text-align: right;">Paid:</td>
+                        <td>${{ partial }}</td>
+                    </tr>
+                    <tr class="invoice-summary">
+                        <td colspan="1" style="text-align: right;">Merchant:</td>
+                        <td>33752088</td>
+                        <td colspan="4" style="text-align: right;">Balance:</td>
+                        <td>${{ remaining }}</td>
+                    </tr>
+                    <tr class="invoice-summary">
+                        <td colspan="1" style="text-align: right;">Edahab:</td>
+                        <td>33752088</td>
+                        
+                    </tr>
                     <!-- Summary directly under the Amount column -->
                     <tr class="invoice-summary">
                         <td colspan="4" style="text-align: right;">Subtotal:</td>

@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm,UserChangeForm
 from django.contrib.auth.models import Group, Permission
 
 from Agency.models import Employee
@@ -12,9 +12,16 @@ class UserRegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'first_name','last_name', 'email','password1', 'password2', 'employee', 'is_admin')
+        fields = ('username', 'first_name','last_name', 'email','password1', 'password2', 'employee','is_admin')
 
 
+
+
+class UserUpdateForm(UserChangeForm):
+    employee = forms.ModelChoiceField(queryset=Employee.objects.all(), required=False)
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email', 'employee', 'is_admin')
 
 
 class GroupForm(forms.ModelForm):

@@ -6,5 +6,6 @@ class AgencyConfig(AppConfig):
     name = "Agency"
 
 
+
     def ready(self):
         import Agency.signals

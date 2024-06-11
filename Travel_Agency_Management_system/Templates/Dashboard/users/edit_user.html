@@ -1,0 +1,105 @@
+{% extends 'Dashboard/base.html' %}
+{% block title_block %}update user{% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <div class="page-header">
+            <h1 class="page-title my-auto">User update form</h1>
+            <div class="page-header-breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{user update form</li>
+                </ol>
+            </div>
+        </div>
+
+        <form action="{% if user.id %}{% url 'edit_user' user.id %}{% else %}{% url 'user_register' %}{% endif %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if messages %}
+            <div>
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div class="card">
+                <div class="card-header justify-content-between d-sm-flex d-block">
+                    <div class="card-title">
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Display general form errors (non-field errors) -->
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Username</label>
+                            <input type="text" name="username" class="form-control" placeholder="Username" required value="{{ form.username.value|default_if_none:'' }}">
+                            {% if form.username.errors %}
+                                <div class="alert alert-danger">{{ form.username.errors|striptags }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            <input type="text" name="first_name" class="form-control" placeholder="First Name" required value="{{ form.first_name.value|default_if_none:'' }}">
+                            {% if form.first_name.errors %}
+                                <div class="alert alert-danger">{{ form.first_name.errors|striptags }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" name="last_name" class="form-control" placeholder="Last Name" required value="{{ form.last_name.value|default_if_none:'' }}">
+                            {% if form.last_name.errors %}
+                                <div class="alert alert-danger">{{ form.last_name.errors|striptags }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" placeholder="Enter email here" required value="{{ form.email.value|default_if_none:'' }}">
+                            {% if form.email.errors %}
+                                <div class="alert alert-danger">{{ form.email.errors|striptags }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Employee (Optional)</label>
+                            <select name="employee" class="form-select">
+                                <option value="">Select Employee</option>
+                                {% for employee in form.fields.employee.queryset %}
+                                    <option value="{{ employee.id }}" {% if form.employee.value == employee.id %}selected{% endif %}>{{ employee.name }}</option>
+                                {% endfor %}
+                            </select>
+                            {% if form.employee.errors %}
+                                <div class="alert alert-danger">{{ form.employee.errors|striptags }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="true" name="is_admin" id="is_admin" {% if form.is_admin.value %}checked{% endif %}>
+                        <label class="form-check-label" for="is_admin">
+                            Admin
+                        </label>
+                    </div>
+                    <!-- Form Submission -->
+                    <div class="row">
+                        <div class="col-12 d-flex justify-content-start">
+                            <button type="submit" class="btn btn-primary me-2">update</button>
+                            <a href="{% url 'employee_list' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

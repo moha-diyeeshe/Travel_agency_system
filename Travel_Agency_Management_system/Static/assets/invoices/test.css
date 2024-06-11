@@ -1,0 +1,75 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+.invoice-container {
+    width: 700px;
+    background-color: #fff;
+    padding: 20px;
+    margin: 30px auto;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.header {
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 10px;
+    font-size: 18px;
+    text-align: center;
+}
+
+.invoice-info, .invoice-details, .bank-details {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #e6f4f1;
+    border: 1px solid #ddd;
+}
+
+table {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #f9f9f9;
+}
+
+.footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #e6f4f1;
+    margin-top: 10px;
+}
+
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.print-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+@media print {
+    .print-button {
+        display: none;
+    }
+}

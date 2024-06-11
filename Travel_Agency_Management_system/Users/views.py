@@ -3,7 +3,7 @@ from django.shortcuts import render,get_object_or_404,redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
 from django.contrib import messages
-from Users.forms import GroupForm, UserGroupsForm, UserRegistrationForm
+from Users.forms import GroupForm, UserGroupsForm, UserRegistrationForm, UserUpdateForm
 from Users.models import ActivityLog, User
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
@@ -14,23 +14,46 @@ from django.contrib.auth.models import Group, Permission
 # Create your views here.
 @login_required
 @permission_required('Agency.add_user', raise_exception=True)
-def user_register(request):
+def user_register(request,employee_id=None):
     if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
+        form = UserRegistrationForm(request.POST, employee_id=employee_id)
         if form.is_valid():
-             new_user = form.save(commit=False)
-             new_user.user = request.user
-             new_user.save()
-             return redirect('index')  # Redirect to your desired page after successful registration
+            new_user = form.save(commit=False)
+            new_user.user = request.user
+            # Set the user as superuser and admin if the 'is_admin' checkbox is checked
+            if 'is_admin' in request.POST and request.POST['is_admin'] == 'true':
+                new_user.is_admin = True
+                new_user.is_superuser = True
+            new_user.save()
+            return redirect('index')  # Redirect to your desired page after successful registration
         else:
             # It's helpful to print form errors to debug in development environments
-            print(form.errors)    
+            print(form.errors)
     else:
         form = UserRegistrationForm()
-    
+
     return render(request, 'Dashboard/users/add_user.html', {'form': form})
 
 
+
+def edit_user(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            updated_user = form.save(commit=False)
+            if 'is_admin' in request.POST and request.POST['is_admin'] == 'true':
+                updated_user.is_admin = True
+                updated_user.is_superuser = True
+            updated_user.save()
+            messages.success(request, 'User updated successfully!')
+            return redirect('user_list')  # Redirect to the user list or relevant page
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = UserUpdateForm(instance=user)
+
+    return render(request, 'Dashboard/users/update_user.html', {'form': form})
 
 
 @permission_required('Agency.view_user', raise_exception=True)
