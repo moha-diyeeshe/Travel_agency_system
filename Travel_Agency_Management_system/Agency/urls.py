@@ -1,6 +1,6 @@
 from django.urls import path
 
-from Agency import context_processors
+from Users import context_processors
 from . import views
 
 urlpatterns = [
@@ -24,7 +24,8 @@ urlpatterns = [
     path('select_customer/', views.select_customer, name='select_customer'),
     path('pending-bookings/Ticket/<int:customer_id>/', views.customer_ticket_pending_bookings, name='customer_ticket_pending_bookings'),
     path('invoices/', views.invoice_list, name='invoice_list'),
-    path('invoices/<int:invoice_id>/', views.view_invoices, name='view_invoice'),
+    path('invoices/view/<int:invoice_id>/', views.view_invoices, name='view_invoice'),
+    path('invoices/edit/<int:transaction_id>/', views.edit_transaction, name='edit_transaction'),
     path('incomplete-transactions/', views.incomplete_transactions, name='incomplete_transactions'),
     path('complete-payment/<int:transaction_id>/', views.complete_payment, name='complete_payment'),
     path('pending-bookings/visa/<int:customer_id>/', views.customer_pending_visa_bookings, name='customer_pending_visa_bookings'),
@@ -45,6 +46,6 @@ urlpatterns = [
     path('departure-report/', views.departure_report, name='departure_report'),
     path('assets-report/', views.assets_report, name='assets_report'),
     path('income-statement/', views.income_statement, name='income_statement'),
-    path('dashboard/', context_processors.activity_notifications, name='dashboard'),
+    
 
 ]

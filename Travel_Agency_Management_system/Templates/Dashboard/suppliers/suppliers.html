@@ -7,44 +7,43 @@
     <div class="container-fluid">
         <!-- PAGE-HEADER -->
         <div class="page-header">
-            <h1 class="page-title my-auto">Suppliers List</h1>
+            <h1 class="page-title my-auto text-uppercase">Suppliers List</h1>
+            <!-- Display Messages -->
         </div>
         <!-- PAGE-HEADER END -->
-
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} mt-2">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
         <!-- Start:: row-1 -->
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="mb-3 d-flex justify-content-between">
-                            <!-- Display Messages -->
-                            {% if messages %}
-                                {% for message in messages %}
-                                    <div class="alert alert-{{ message.tags }} mt-2">
-                                        {{ message }}
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
+                        <div class="mb-3 d-flex justify-content-between text-uppercase">
+                            
                             <!-- Search functionality -->
                             <form action="{% url 'suppliers_list' %}" method="get">
                                 <div class="input-group w-50">
-                                    <input type="text" class="form-control" placeholder="Search supplier by name or email" aria-label="Search" name="query" value="{{ query }}">
-                                    <button class="btn btn-outline-secondary btn-sm btn-lg" type="submit" id="button-search">Search</button>
+                                    <input type="text" class="form-control text-uppercase" placeholder="Search supplier by name or email" aria-label="Search" name="query" value="{{ query }}">
+                                    <button class="btn btn-outline-secondary btn-sm btn-lg text-uppercase" type="submit" id="button-search">Search</button>
                                 </div>
                             </form>
                             
                             <!-- Add button -->
-                            <a href="{% url 'supplier_register' %}" class="btn btn-primary btn-sm">
+                            <a href="{% url 'supplier_register' %}" class="btn btn-primary btn-sm text-uppercase">
                                 <i class="ri-add-fill"></i> Add New Supplier
                             </a>  
                         </div>
                         
                         <!-- Table -->
-                        <div class="table-responsive">
+                        <div class="table-responsive text-uppercase">
                             <table class="table table-bordered text-nowrap w-100" id="userlist-table">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Selection</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Registered At</th>
                                         <th scope="col">Action</th>
@@ -53,7 +52,6 @@
                                 <tbody>
                                     {% for supplier in page_obj %}
                                     <tr>
-                                        <td><input type="checkbox" class="form-check-input" value="{{ supplier.id }}"></td>
                                         <td>{{ supplier.name }}</td>
                                         <td>{{ supplier.created_at|date:"d-m-Y" }}</td>
                                         <td class="align-middle">
@@ -70,18 +68,34 @@
                         </div>
                         
                         <!-- Pagination -->
-                        <nav aria-label="Page navigation">
+                        <nav aria-label="Page navigation example">
                             <ul class="pagination justify-content-end">
                                 {% if page_obj.has_previous %}
                                     <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}&query={{ query }}">Previous</a>
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}&query={{ query }}" tabindex="-1">Previous</a>
                                     </li>
                                 {% endif %}
+                                
                                 {% for num in page_obj.paginator.page_range %}
-                                    <li class="page-item {% if num == page_obj.number %}active{% endif %}">
-                                        <a class="page-link" href="?page={{ num }}&query={{ query }}">{{ num }}</a>
-                                    </li>
+                                    {% if num == page_obj.number %}
+                                        <li class="page-item active" aria-current="page">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}&query={{ query }}">{{ num }}</a>
+                                        </li>
+                                    {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}&query={{ query }}">{{ num }}</a>
+                                        </li>
+                                    {% elif num == page_obj.number|add:-3 or num == page_obj.number|add:3 %}
+                                        <li class="page-item">
+                                            <span class="page-link">...</span>
+                                        </li>
+                                    {% endif %}
                                 {% endfor %}
+                                
                                 {% if page_obj.has_next %}
                                     <li class="page-item">
                                         <a class="page-link" href="?page={{ page_obj.next_page_number }}&query={{ query }}">Next</a>

@@ -72,7 +72,13 @@ body {
     border: none;
 }
 
+.thank-you-message {
+    text-align: center;
 
+}
+.text {
+ color: #ff0000;   
+}
 
 .no-print {
     text-align: center;

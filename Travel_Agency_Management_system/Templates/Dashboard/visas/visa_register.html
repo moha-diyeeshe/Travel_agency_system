@@ -9,8 +9,17 @@
         <div class="page-header">
             <h1 class="page-title">Visa Booking Form</h1>
         </div>
+         <!-- Display any messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        
 
-        <!-- Display any messages -->
+       
        
 
         <!-- Form to submit visa booking -->
@@ -19,8 +28,8 @@
 
             <div class="row mb-3">
                 <div class="col-md-2">
-                    <label for="age_group" class="form-label">Age Group</label>
-                    <select class="form-select" id="age_group" name="age_group" required>
+                    <label for="age_group" class="form-label text-uppercase">Age Group</label>
+                    <select class="form-select text-uppercase" id="age_group" name="age_group" required>
                         {% for value, display in age_choices %}
                             <option value="{{ value }}">{{ display }}</option>
                         {% endfor %}
@@ -28,18 +37,29 @@
                 </div>
                 <div class="col-md-3">
                     <label for="name" class="form-label text-uppercase">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+                    <input type="text" class="form-control text-uppercase" id="name" name="name" required>
                 </div>
                 <div class="col-md-3">
-                    <label for="nationality" class="form-label text-uppercase">NATIONALITY</label>
-                    <input type="text" class="form-control" id="nationality" name="nationality" required>
+                    <label for="nationality" class="form-label text-uppercase">Nationality</label>
+                    <select class="form-select text-uppercase" id="nationality" name="nationality" required>
+                        <option value="" selected disabled>Select Nationality</option>
+                        {% for country in countries %}
+                            <option value="{{ country.id }}">{{ country.nationality }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="col-md-3">
-                    <label for="country" class="form-label">Country</label>
-                    <input type="text" class="form-control text-uppercase" id="country" name="country" required>
+                    <label for="country" class="form-label text-uppercase">Country</label>
+                    <select class="form-select text-uppercase" id="country" name="country" required>
+                        <option value="" selected disabled>Select Country</option>
+                        {% for country in countries %}
+                            <option value="{{ country.id }}">{{ country.name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
+                
                 <div class="col-md-2">
-                    <label for="departure_date" class="form-label text-uppercase">Departure Date</label>
+                    <label for="departure_date" class="form-label text-uppercase">Issue Date</label>
                     <input type="date" class="form-control text-uppercase" id="departure_date" name="departure_date" required>
                 </div>
                 <div class="col-md-2">
@@ -79,7 +99,7 @@
 
             <div class="row mb-3">
                 <div class="col-md-3">
-                    <label for="customer" class="form-label">Customer</label>
+                    <label for="customer" class="form-label text-uppercase">Customer</label>
                     <select class="form-select text-uppercase" id="customer" name="customer" required>
                         <option value="" disabled selected>Select a Customer</option>
                         {% for customer in customers %}
@@ -91,7 +111,7 @@
 
             <div class="row">
                 <div class="col-12">
-                    <button type="submit" class="btn btn-primary">Submit Booking</button>
+                    <button type="submit" class="btn btn-primary text-uppercase">Submit Booking</button>
                 </div>
             </div>
         </form>

@@ -11,7 +11,13 @@
         </div>
 
         <!-- Display any messages -->
-        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
 
         <!-- Form to submit employee registration -->
         <form action="{% url 'employee_update' employee.id %}" method="post" enctype="multipart/form-data">
@@ -19,8 +25,8 @@
 
             <div class="row mb-3">
                 <div class="col-md-4">
-                    <label for="name" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" value="{{ employee.name|default_if_none:'' }}">
+                    <label for="name" class="form-label text-uppercase">Name</label>
+                    <input type="text" class="form-control text-uppercase" id="name" name="name" value="{{ employee.name|default_if_none:'' }}">
                     {% if form.name.errors %}
                         <div class="alert alert-danger">
                             {{ form.name.errors }}
@@ -28,8 +34,8 @@
                     {% endif %}
                 </div>
                 <div class="col-md-4">
-                    <label for="address" class="form-label">Address</label>
-                    <input type="text" class="form-control" id="address" name="address" value="{{ employee.address|default_if_none:'' }}">
+                    <label for="address" class="form-label text-uppercase">Address</label>
+                    <input type="text" class="form-control text-uppercase" id="address" name="address" value="{{ employee.address|default_if_none:'' }}">
                     {% if form.address.errors %}
                         <div class="alert alert-danger">
                             {{ form.address.errors }}
@@ -37,8 +43,8 @@
                     {% endif %}
                 </div>
                 <div class="col-md-4">
-                    <label for="phone" class="form-label">Phone</label>
-                    <input type="tel" class="form-control" id="phone" name="phone" value="{{ employee.phone|default_if_none:'' }}">
+                    <label for="phone" class="form-label text-uppercase">Phone</label>
+                    <input type="tel" class="form-control text-uppercase" id="phone" name="phone" value="{{ employee.phone|default_if_none:'' }}">
                     {% if form.phone.errors %}
                         <div class="alert alert-danger">
                             {{ form.phone.errors }}
@@ -49,8 +55,8 @@
 
             <div class="row mb-3">
                 <div class="col-md-4">
-                    <label for="salary" class="form-label">Salary</label>
-                    <input type="number" class="form-control" id="salary" name="salary" step="0.01" value="{{ employee.salary|default_if_none:'' }}">
+                    <label for="salary" class="form-label text-uppercase">Salary</label>
+                    <input type="number" class="form-control text-uppercase" id="salary" name="salary" step="0.01" value="{{ employee.salary|default_if_none:'' }}">
                     {% if form.salary.errors %}
                         <div class="alert alert-danger">
                             {{ form.salary.errors }}
@@ -58,8 +64,8 @@
                     {% endif %}
                 </div>
                 <div class="col-md-4">
-                    <label for="title" class="form-label">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" value="{{ employee.title|default_if_none:'' }}">
+                    <label for="title" class="form-label text-uppercase">Title</label>
+                    <input type="text" class="form-control text-uppercase" id="title" name="title" value="{{ employee.title|default_if_none:'' }}">
                     {% if form.title.errors %}
                         <div class="alert alert-danger">
                             {{ form.title.errors }}
@@ -67,8 +73,8 @@
                     {% endif %}
                 </div>
                 <div class="col-md-4">
-                    <label for="profile_photo" class="form-label">Profile Photo</label>
-                    <input type="file" class="form-control" id="profile_photo" name="profile_photo" accept="image/png, image/jpeg">
+                    <label for="profile_photo" class="form-label text-uppercase">Profile Photo</label>
+                    <input type="file" class="form-control text-uppercase" id="profile_photo" name="profile_photo" accept="image/png, image/jpeg">
                     {% if form.profile_photo.errors %}
                         <div class="alert alert-danger">
                             {{ form.profile_photo.errors }}
@@ -79,7 +85,7 @@
 
             <div class="row">
                 <div class="col-12">
-                    <button type="submit" class="btn btn-primary"> update Employee</button>
+                    <button type="submit" class="btn btn-primary text-uppercase"> update Employee</button>
                 </div>
             </div>
         </form>

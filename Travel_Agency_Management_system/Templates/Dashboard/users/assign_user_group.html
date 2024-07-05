@@ -4,6 +4,13 @@
 {% block content %}
 <div class="main-content app-content">
     <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
         <h1>Assign Groups to {{ user.username }}</h1>
         <form method="post">
             {% csrf_token %}

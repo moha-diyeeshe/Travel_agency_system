@@ -13,20 +13,20 @@
         <form action="" method="get" class="form-inline mb-4">
             <div class="row">
                 <div class="col-md-3">
-                    <input type="text" class="form-control" id="search" name="search" placeholder="Enter destination code or name" value="{{ search_query }}">
+                    <input type="text" class="form-control text-uppercase" id="search" name="search" placeholder="Enter destination code or name" value="{{ search_query }}">
                 </div>
                 <div class="col-md-3">
-                    <input type="date" class="form-control" id="departure_date" name="departure_date" placeholder="Departure Date" value="{{ departure_date }}">
+                    <input type="date" class="form-control text-uppercase" id="departure_date" name="departure_date" placeholder="Departure Date" value="{{ departure_date }}">
                 </div>
                 <div class="col-md-3">
-                    <button type="submit" class="btn btn-primary">Find</button>
+                    <button type="submit" class="btn btn-primary text-uppercase">Find</button>
                 </div>
             </div>
         </form>
 
         <div class="invoice-container">
             <div class="header">
-                <img src="{% static 'assets/logo.jpeg' %}" alt="Company Logo">
+                <img src="{% static 'assets/logo.jpg' %}" alt="Company Logo">
             </div>
 
             <div class="invoice-info">
@@ -43,7 +43,7 @@
                 </div>
             </div>
 
-            <table class="invoice-table">
+            <table class="invoice-table text-uppercase">
                 <thead>
                     <tr>
                         <th>#</th>

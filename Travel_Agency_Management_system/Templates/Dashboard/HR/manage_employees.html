@@ -9,6 +9,13 @@
         <div class="page-header">
             <h1 class="page-title my-auto">Employee List</h1>
         </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
         <!-- PAGE-HEADER END -->
 
         <!-- Start:: row-1 -->
@@ -30,7 +37,7 @@
 
                         <!-- Table -->
                         <div class="table-responsive">
-                            <table class="table table-bordered text-nowrap w-100" id="employee-list-table">
+                            <table class="table table-bordered text-nowrap w-100 text-uppercase" id="employee-list-table">
                                 <thead>
                                     <tr>
                                         <th scope="col">Name</th>
@@ -66,15 +73,35 @@
                         <nav aria-label="Page navigation example">
                             <ul class="pagination justify-content-end">
                                 {% if page_obj.has_previous %}
-                                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&search={{ request.GET.search }}">Previous</a></li>
-                                {% endif %}
-                                {% for num in page_obj.paginator.page_range %}
-                                    <li class="page-item {% if num == page_obj.number %}active{% endif %}">
-                                        <a class="page-link" href="?page={{ num }}&search={{ request.GET.search }}">{{ num }}</a>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}&query={{ query }}" tabindex="-1">Previous</a>
                                     </li>
+                                {% endif %}
+                                
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if num == page_obj.number %}
+                                        <li class="page-item active" aria-current="page">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}&query={{ query }}">{{ num }}</a>
+                                        </li>
+                                    {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}&query={{ query }}">{{ num }}</a>
+                                        </li>
+                                    {% elif num == page_obj.number|add:-3 or num == page_obj.number|add:3 %}
+                                        <li class="page-item">
+                                            <span class="page-link">...</span>
+                                        </li>
+                                    {% endif %}
                                 {% endfor %}
+                                
                                 {% if page_obj.has_next %}
-                                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&search={{ request.GET.search }}">Next</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}&query={{ query }}">Next</a>
+                                    </li>
                                 {% endif %}
                             </ul>
                         </nav>

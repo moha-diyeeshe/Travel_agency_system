@@ -6,6 +6,13 @@
     <div class="main-content app-content">
         <div class="container-fluid">
             <h1>Record Expense</h1>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Expense Details</h5>
@@ -13,8 +20,8 @@
                         {% csrf_token %}
                         <div class="row gy-4">
                             <div class="col-md-6">
-                                <label class="form-label">Category</label>
-                                <select class="form-select" name="category" required>
+                                <label class="form-label text-uppercase">Category</label>
+                                <select class="form-select text-uppercase" name="category" required>
                                     <option value="" selected disabled>Select expense type</option>
                                     {% for value, name in Expense_category %}
                                         <option value="{{ value }}">{{ name }}</option>
@@ -28,7 +35,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Amount</label>
-                                <input type="number" class="form-control" name="amount" step="0.01" min="0" required>
+                                <input type="number" class="form-control text-uppercase" name="amount" step="0.01" min="0" required>
                                 {% if form.amount.errors %}
                                     <div class="alert alert-danger">
                                         {{ form.amount.errors }}
@@ -36,8 +43,8 @@
                                  {% endif %}
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Payment Method</label>
-                                <select class="form-select" name="payment_method">
+                                <label class="form-label text-uppercase">Payment Method</label>
+                                <select class="form-select text-uppercase" name="payment_method">
                                     <option value="" selected disabled>Select Payment type</option>
                                     {% for value, name in payment_methods %}
                                         <option value="{{ value }}">{{ name }}</option>
@@ -49,9 +56,9 @@
                                     </div>
                                  {% endif %}
                             </div>
-                            <div class="col-md-12">
-                                <label class="form-label">Description</label>
-                                <textarea class="form-control" name="description" rows="3"></textarea>
+                            <div class="col-md-12 text-uppercase">
+                                <label class="form-label text-uppercase">Description</label>
+                                <textarea class="form-control text-uppercase" name="description" rows="3"></textarea>
                             </div>
                             {% if form.description.errors %}
                                     <div class="alert alert-danger">
@@ -59,7 +66,7 @@
                                     </div>
                                  {% endif %}
                         </div>
-                        <button type="submit" class="btn btn-success mt-4">Submit Expense</button>
+                        <button type="submit" class="btn btn-success mt-4 text-uppercase">Submit Expense</button>
                     </form>
                 </div>
             </div>

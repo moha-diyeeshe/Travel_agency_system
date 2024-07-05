@@ -9,6 +9,13 @@
 
 <div class="main-content app-content">
     <div class="container-fluid">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
         <form action="" method="get">
             <div class="row">
                 <div class="col-md-3">
@@ -26,7 +33,7 @@
         </form>
         <div class="invoice-container">
             <div class="header">
-                <img src="{% static 'assets/logo.jpeg' %}" alt="Company Logo">
+                <img src="{% static 'assets/logo.jpg' %}" alt="Company Logo">
                 <div class="status"></div>
             </div>
 
@@ -43,8 +50,8 @@
                     <strong class="invoice"> Expense Report</strong><br>
                 </div>
             </div>
-            <h1 class="text-center text-danger">Visa bookings</h1>
-            <table class="invoice-table">
+            <h1 class="text-center text-danger text-uppercase">Visa bookings</h1>
+            <table class="invoice-table text-uppercase">
                 <thead>
                     <tr>
                         <th>Applicant Name</th>
@@ -69,7 +76,7 @@
                 </tbody>
             </table>
             <h1 class="text-center text-danger">Ticket bookings</h1>
-            <table class="invoice-table">
+            <table class="invoice-table text-uppercase">
                 <thead>
                     <tr>
                          <th>Passenger Name</th>

@@ -8,7 +8,9 @@
 
         <div class="page-header">
             <h1 class="page-title my-auto">Ticket Registration Form</h1>
+            
             <div class="page-header-breadcrumb">
+                
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item">
                         <a href="javascript:void(0);">
@@ -26,8 +28,15 @@
                     <li class="breadcrumb-item active" aria-current="page">Inputs</li>
                 </ol>
             </div>
+            
         </div>
-
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
      
 
         <form action="{% url 'ticket_register' %}" method="post" enctype="multipart/form-data">
@@ -36,7 +45,7 @@
                 <div class="col-xl-12">
                     <div class="card">
                         <div class="card-header justify-content-between d-sm-flex d-block">
-                            <div class="card-title">
+                            <div class="card-title text-uppercase">
                                 Input Types
                             </div>
                         </div>
@@ -59,7 +68,7 @@
                             <div class="row gy-4">
                                 <!-- Traveler Information Inputs -->
                                 <div class="col-md-1 ">
-                                    <label class="form-label">Age</label>
+                                    <label class="form-label text-uppercase">Age</label>
                                     <select class="form-select text-uppercase" name="age_category" required>
                                         <option value="ADT">Adult</option>
                                         <option value="CHD">Child</option>
@@ -69,51 +78,51 @@
                                     {% endif %}
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="form-label">PNR</label>
+                                    <label class="form-label text-uppercase">PNR</label>
                                     <input type="text" class="form-control text-uppercase" name="pnr" required>
                                     {% if form.pnr.errors %}
                                         <div class="alert alert-danger">{{ form.pnr.errors|striptags }}</div>
                                     {% endif %}
                                 </div>
                                 <div class="col-md-3 text-uppercase">
-                                    <label class="form-label">Passenger Name</label>
+                                    <label class="form-label text-uppercase">Passenger Name</label>
                                     <input type="text" class="form-control text-uppercase" name="passenger_name" required>
                                     {% if form.passenger_name.errors %}
                                         <div class="alert alert-danger">{{ form.passenger_name.errors|striptags }}</div>
                                     {% endif %}
                                 </div>
                                 <div class="col-md-2 ">
-                                    <label class="form-label ">Travel Date</label>
+                                    <label class="form-label text-uppercase">Travel Date</label>
                                     <input type="date" class="form-control text-uppercase" name="travel_date" required>
                                     {% if form.travel_date.errors %}
                                         <div class="alert alert-danger">{{ form.travel_date.errors|striptags }}</div>
                                     {% endif %}
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="form-label">Fare</label>
+                                    <label class="form-label text-uppercase">Fare</label>
                                     <input type="number" class="form-control" value="0" min="0" name="fare" required>
                                     {% if form.fare.errors %}
                                         <div class="alert alert-danger">{{ form.fare.errors|striptags }}</div>
                                     {% endif %}
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="form-label">Commission</label>
+                                    <label class="form-label text-uppercase">Commission</label>
                                     <input type="number" class="form-control" value="0" min="0" name="commission" required>
                                     {% if form.commission.errors %}
                                         <div class="alert alert-danger">{{ form.commission.errors|striptags }}</div>
                                     {% endif %}
                                 </div>
                                 <div class="col-md-1">
-                                    <label class="form-label">Tax</label>
+                                    <label class="form-label text-uppercase">Tax</label>
                                     <input type="number" class="form-control" value="0" min="0" name="tax" readonly>
                                 </div>
                                 <!-- Journey Details Inputs -->
                                 <div class="col-md-1">
-                                    <label class="form-label">Sell Fare</label>
+                                    <label class="form-label text-uppercase">Sell Fare</label>
                                     <input type="number" class="form-control" value="0" min="0" name="sell_fare" readonly>
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="form-label">From</label>
+                                    <label class="form-label text-uppercase">From</label>
                                     <select class="form-select text-uppercase" name="from_city" required>
                                         <option value="" selected disabled>Select City</option>
                                         {% for city in city %}
@@ -125,7 +134,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="form-label">Destination</label>
+                                    <label class="form-label text-uppercase">Destination</label>
                                     <select class="form-select text-uppercase" name="destination" required>
                                         <option value="" selected disabled>Select Destination</option>
                                         {% for city in city %}
@@ -137,7 +146,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="form-label">Back To</label>
+                                    <label class="form-label text-uppercase">Back To</label>
                                     <select class="form-select text-uppercase" name="back_to" >
                                         <option value="" selected disabled>Select City</option>
                                         {% for city in city %}
@@ -149,15 +158,15 @@
                                     {% endif %}
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="form-label">Phone</label>
+                                    <label class="form-label text-uppercase">Phone</label>
                                     <input type="tel" class="form-control" name="phone" required>
                                     {% if form.phone.errors %}
                                         <div class="alert alert-danger">{{ form.phone.errors|striptags }}</div>
                                     {% endif %}
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="form-label">Status</label>
-                                    <select class="form-select" name="status">
+                                    <label class="form-label text-uppercase">Status</label>
+                                    <select class="form-select text-uppercase" name="status">
                                         <option value="pending" selected>
                                             Pending
                                         </option>
@@ -168,7 +177,7 @@
                                 <!-- Additional Selection -->
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label class="form-label">Customer</label>
+                                    <label class="form-label text-uppercase">Customer</label>
                                     <select class="form-select text-uppercase" name="customer" required>
                                         <option value="" selected disabled>Select Customer</option>
                                         {% for customer in customers %}
@@ -180,17 +189,12 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <label class="form-label">Booking Date</label>
-                                    <input type="date" class="form-control text-uppercase" name="booking_date" value="{{ today|date:'Y-m-d' }}" >
-                                </div>
-                            </div>
+                          
                             <!-- Form Submission -->
                             <div class="row gy-5">
                                 <div class="col-12 d-flex justify-content-start">
-                                    <button type="submit" class="btn btn-primary me-2">Save</button>
-                                    <button type="button" class="btn btn-secondary">Cancel</button>
+                                    <button type="submit" class="btn btn-primary me-2 text-uppercase">Save</button>
+                                    <button type="button" class="btn btn-secondary text-uppercase">Cancel</button>
                                 </div>
                             </div>
                         </div>

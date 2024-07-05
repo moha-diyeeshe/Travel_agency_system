@@ -5,18 +5,25 @@
 <div class="main-content app-content">
     <div class="container-fluid">
         <div class="page-header">
-            <h1 class="page-title my-auto">booking invoice regestration</h1>
+            <h1 class="page-title my-auto text-uppercase">booking invoice regestration</h1>
+            
         </div>
-
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
         <form id="updateBookingForm" method="post">
             {% csrf_token %}
             <input type="hidden" name="customer_id" value="{{ customer.id }}">
 
             {% if no_pending_bookings %}
-                <div class="alert alert-info">No pending bookings for this customer.</div>
+                <div class="alert alert-info text-uppercase">No pending bookings for this customer.</div>
             {% else %}
                 <div class="row mb-3">
-                    <table class="table">
+                    <table class="table text-uppercase">
                         <thead>
                             <tr>
                                 <th scope="col">Selection</th>
@@ -34,7 +41,7 @@
                                 <td><input type="checkbox" class="form-check-input" name="bookings" value="{{ booking.id }}"></td>
                                 <td>{{ booking.name }}</td>
                                 <td>{{ booking.country}}</td>
-                                <td>{{ booking.travel_date }}</td>
+                                <td>{{ booking.departure_date }}</td>
                                 <td>{{ booking.visa_fee }}</td>
                                 <td>{{ booking.commission }}</td>
                                 <td>{{ booking.total_cost }}</td>
@@ -45,25 +52,27 @@
                 </div>
 
                 <div class="row mb-3">
-                    <div class="col-md-3">
+                    <div class="col-md-3 text-uppercase">
                         <label>Payment Method:</label>
                         {{ payment_form.payment_method }}
                     </div>
-                    <div class="col-md-3">
-                        <label>Amount:</label>
+                    <div class="col-md-3 text-uppercase">
+                        <label>paid Amount:</label>
                         {{ payment_form.paid_amount }}
-                        {% if messages %}
-                            {% for message in messages %}
-                                <div class="alert-danger alert-{{ message.tags }}">
-                                    {{ message }}
-                                </div>
-                            {% endfor %}
-                        {% endif %}
+                        <div id="error-message">
+                            {% if messages %}
+                                {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger">{{ message }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>  
                     </div>
                 </div>
 
                 <div class="row mb-3">
-                    <button type="submit" class="btn btn-primary">Add these to the invoice</button>
+                    <button type="submit" class="btn btn-primary text-uppercase">Add these to the invoice</button>
                 </div>
             {% endif %}
         </form>

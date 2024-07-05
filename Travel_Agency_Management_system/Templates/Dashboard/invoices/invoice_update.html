@@ -1,0 +1,215 @@
+{% extends 'Dashboard/base.html' %}
+
+{% block title_block %}Edit Transaction{% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <div class="page-header">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="container">
+            <form method="post" id="myForm">
+                {% csrf_token %}
+                
+                <h2 class="mt-4">Transaction and Payment Details</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped text-uppercase">
+                        <thead>
+                            <tr>
+                                <th>Payment Date</th>
+                                <th>Amount</th>
+                                <th>Payment Method</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in previous_payments %}
+                            <tr>
+                                <td><h3>{{ payment.payment_date }}</h3></td>
+                                <td><h3>${{ payment.amount }}</h3></td>
+                                <td><h3>{{ payment.payment_method }}</h3></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body text-uppercase">
+                        <h3>Customer: {{ transaction.customer.name }}</h3>
+                        <h3>Total Amount: ${{ total_amount }}</h3>
+                        <h3>Paid Amount: ${{ paid_amount }}</h3>
+                        <h3>Remaining Amount: ${{ remaining }}</h3>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-body text-uppercase">
+                        <h5 class="card-title text-uppercase">Make Payment</h5>
+                        <div class="row">
+                            <div class="col-md-4 col-sm-12">
+                                <label>Payment Method</label>
+                                <select name="payment_method" class="form-control text-uppercase">
+                                    <option value="bank">Bank</option>
+                                    <option value="evc_plus">EVC Plus</option>
+                                    <option value="edahab">Edahab</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 col-sm-12 text-uppercase">
+                                <label>Paid Amount</label>
+                                <input type="text" name="paid_amount" value="0" class="form-control">
+                                <div id="error-message">
+                                    {% if messages %}
+                                        {% for message in messages %}
+                                            {% if message.tags == "error" %}
+                                                <div class="alert alert-danger">{{ message }}</div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Dynamic Display for Current Bookings Based on Transaction Type -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Current Bookings</h5>
+                        {% if transaction.transaction_type == 'ticket' %}
+                        <!-- Display for Ticket Bookings -->
+                        <div class="table-responsive">
+                            <table class="table text-uppercase">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Passenger Name</th>
+                                        <th scope="col">From - To</th>
+                                        <th scope="col">Travel Date</th>
+                                        <th scope="col">Fare</th>
+                                        <th scope="col">Commission</th>
+                                        <th scope="col">Total Cost</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for booking in transaction_bookings %}
+                                    <tr>
+                                        <td>{{ booking.passenger_name }}</td>
+                                        <td>{{ booking.from_city.name }} - {{ booking.destination.name }}</td>
+                                        <td>{{ booking.travel_date|date:"Y-m-d" }}</td>
+                                        <td>${{ booking.fare }}</td>
+                                        <td>${{ booking.commission }}</td>
+                                        <td>${{ booking.fare|add:booking.commission }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% elif transaction.transaction_type == 'visa' %}
+                        <!-- Display for Visa Bookings -->
+                        <div class="table-responsive">
+                            <table class="table text-uppercase">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Country</th>
+                                        <th scope="col">Issue Date</th>
+                                        <th scope="col">Visa Fee</th>
+                                        <th scope="col">Commission</th>
+                                        <th scope="col">Total Cost</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for booking in transaction_bookings %}
+                                    <tr>
+                                        <td>{{ booking.name }}</td>
+                                        <td>{{ booking.country }}</td>
+                                        <td>{{ booking.date_created }}</td>
+                                        <td>${{ booking.visa_fee }}</td>
+                                        <td>${{ booking.commission }}</td>
+                                        <td>${{ booking.visa_fee|add:booking.commission }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Add Pending Bookings Button -->
+                {% if no_pending_bookings %}
+                <div class="card mb-3">
+                    <div class="card-body text-uppercase">
+                        <h5>No pending bookings available for this customer.</h5>
+                    </div>
+                </div>
+                {% else %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title text-uppercase">Add Pending Bookings</h5>
+                        <div class="table-responsive">
+                            <table class="table text-uppercase">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Selection</th>
+                                        {% if transaction.transaction_type == 'ticket' %}
+                                            <th scope="col">Passenger Name</th>
+                                            <th scope="col">From - To</th>
+                                            <th scope="col">Fare</th>
+                                        {% else %}
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Country</th>
+                                            <th scope="col">Visa Fee</th>
+                                        {% endif %}
+                                        <th scope="col">Travel Date</th>
+                                        <th scope="col">Commission</th>
+                                        <th scope="col">Total Cost</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for booking in pending_bookings %}
+                                    <tr>
+                                        <td><input type="checkbox" class="form-check-input" name="bookings" value="{{ booking.id }}"></td>
+                                        {% if transaction.transaction_type == 'ticket' %}
+                                            <td>{{ booking.passenger_name }}</td>
+                                            <td>{{ booking.from_city.name }} - {{ booking.destination.name }}</td>
+                                            <td>${{ booking.fare }}</td>
+                                        {% else %}
+                                            <td>{{ booking.name }}</td>
+                                            <td>{{ booking.country }}</td>
+                                            <td>${{ booking.visa_fee }}</td>
+                                        {% endif %}
+                                        {% if transaction.transaction_type == 'ticket' %}
+                                        <td>{{ booking.travel_date }}</td>
+                                        {% else %}
+                                        <td>{{ booking.date_created }}</td>
+                                        {% endif %}
+                                        <td>${{ booking.commission }}</td>
+                                        {% if transaction.transaction_type == 'ticket' %}
+                                        <td>${{ booking.fare|add:booking.commission }}</td>
+                                        {% else %}
+                                        <td>${{ booking.visa_fee|add:booking.commission }}</td>
+                                        {% endif %}
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <button type="submit" class="btn btn-warning text-uppercase" name="action" value="add_bookings">Add Pending Bookings</button>
+                    </div>
+                </div>
+                
+                
+                {% endif %}
+
+                <button type="submit" class="btn btn-primary mt-4 text-uppercase" name="action" value="update_transaction">Submit Payment</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

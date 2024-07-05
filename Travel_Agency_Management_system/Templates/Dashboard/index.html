@@ -16,15 +16,14 @@
             </div>
           </div>
         <!-- PAGE-HEADER END -->
-
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
 
         <!-- Start::row-1 -->
         <div class="row">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
             <div class="col-xl-6 col-md-12 col-lg-12">
                 <div class="card bg-primary text-fixed-white">
                     <div class="card-body">
@@ -53,7 +52,7 @@
                     <div class="card-body text-center">
                         <span class="fs-50 icon-muted"><i class="si si-chart icon-dropshadow-info text-info"></i></span>
                         <p class=" mb-1">percentage of revenue change</p>
-                        <h2 class="mb-1 fs-40 fw-bold">{{ percentage_change }}</h2>
+                        <h2 class="mb-1 fs-40 fw-bold">{{ percentage_change |floatformat:2}}%</h2>
                         <small class="mb-1 text-muted"><small class="text-success"><i class="fa fa-caret-up  me-1"></i> </small></small>
                     </div>
                 </div>
@@ -250,7 +249,7 @@
                     </div>
                     <div class="card-body">
                         <div class="">
-                            <div class="table-responsive">
+                            <div class="table-responsive text-uppercase">
                                 <table class="table card-table table-vcenter text-nowrap mb-0 border">
                                     <thead>
                                         <tr>

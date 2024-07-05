@@ -9,6 +9,7 @@
         <div class="page-header">
             <h1 class="page-title my-auto">Invoice List</h1>
             <div class="page-header-breadcrumb">
+                
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item">
                         <a href="javascript:void(0);">
@@ -23,7 +24,13 @@
             </div>
         </div>
         <!-- PAGE-HEADER END -->
-
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
         <!-- Start:: row-1 -->
         <div class="row">
             <div class="col-lg-12">
@@ -68,7 +75,7 @@
 
                         <!-- Table -->
                         <div class="table-responsive">
-                            <table class="table table-bordered text-nowrap w-100" id="invoice-list">
+                            <table class="table table-bordered text-nowrap w-100 text-uppercase" id="invoice-list">
                                 <thead>
                                     <tr>
                                         <th scope="col">Invoice No</th>
@@ -81,20 +88,24 @@
                                 </thead>
                                 <tbody>
                                     {% for invoice in page_obj %}
-                                    <tr>
+                                    <tr id="invoice-{{ invoice.id }}">
                                         <td>{{ invoice.reference_number }}</td>
                                         <td>${{ invoice.total_amount }}</td>
                                         <td>{{ invoice.transaction_date|date:"Y-m-d" }}</td>
                                         <td>
-                                            <span class="badge {% if invoice.status == 'paid' %}bg-success{% elif invoice.status == 'pending' %}bg-warning{% else %}bg-danger{% endif %}">
+                                            <span class="badge {% if invoice.status == 'paid' %}bg-success{% elif invoice.status == 'pending' %} bg-danger {% else %}bg-warning{% endif %}">
                                                 {{ invoice.status|upper }}
                                             </span>
                                         </td>
                                         <td>{{ invoice.customer.name }}</td>
                                         <td>
-                                            <a href="{% url 'view_invoice' invoice.id %}" class="btn btn-primary btn-sm">
-                                                <i class="fe fe-eye"></i> View
-                                            </a>
+                                            <div class="">
+                                                <a href="javascript:void(0)" class="btn btn-light btn-sm" data-bs-toggle="dropdown" aria-expanded="false">Options <i class="fa fa-angle-down"></i></a>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" href="{% url 'view_invoice' invoice.id %}"><i class="fe fe-eye me-2 d-inline-flex"></i> View</a>
+                                                    <a class="dropdown-item" href="{% url 'edit_transaction' invoice.id %}"><i class="fe fe-edit me-2 d-inline-flex"></i> Edit</a>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                     {% endfor %}
@@ -102,17 +113,41 @@
                             </table>
                         </div>
 
+
+
                         <!-- Pagination -->
-                        <nav aria-label="Invoice navigation">
+                        <nav aria-label="Page navigation example">
                             <ul class="pagination justify-content-end">
                                 {% if page_obj.has_previous %}
-                                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&query={{ query }}{% endif %}">Previous</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}&query={{ query }}" tabindex="-1">Previous</a>
+                                    </li>
                                 {% endif %}
+                                
                                 {% for num in page_obj.paginator.page_range %}
-                                    <li class="page-item {% if num == page_obj.number %}active{% endif %}"><a class="page-link" href="?page={{ num }}{% if query %}&query={{ query }}{% endif %}">{{ num }}</a></li>
+                                    {% if num == page_obj.number %}
+                                        <li class="page-item active" aria-current="page">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}&query={{ query }}">{{ num }}</a>
+                                        </li>
+                                    {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}&query={{ query }}">{{ num }}</a>
+                                        </li>
+                                    {% elif num == page_obj.number|add:-3 or num == page_obj.number|add:3 %}
+                                        <li class="page-item">
+                                            <span class="page-link">...</span>
+                                        </li>
+                                    {% endif %}
                                 {% endfor %}
+                                
                                 {% if page_obj.has_next %}
-                                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&query={{ query }}{% endif %}">Next</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}&query={{ query }}">Next</a>
+                                    </li>
                                 {% endif %}
                             </ul>
                         </nav>
@@ -129,4 +164,7 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
 {%endblock%}

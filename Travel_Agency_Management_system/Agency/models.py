@@ -26,6 +26,10 @@ class TransactionReference(models.Model):
 
 
 
+
+
+
+
 class Customer(models.Model):
     name = models.CharField(max_length=80)
     phone = models.CharField(max_length=15)
@@ -42,11 +46,23 @@ class Supplier(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+
     def __str__(self):
         return self.name
 
+
+class Country(models.Model):
+    name = models.CharField(max_length=100)
+    nationality = models.CharField(max_length=100)
+
+
+    def __str__(self):
+        return self.name
+    
+    
 class City(models.Model):
     name = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -131,8 +147,8 @@ class VisaBooking(models.Model):
         ('inf', 'INF'),
     ]
     name = models.CharField(max_length=100)
-    nationality = models.CharField(max_length=100, default='SOMALIA')
-    country = models.CharField(max_length=100)
+    country = models.ForeignKey(Country, related_name='visa_country', on_delete=models.CASCADE)
+    nationality = models.ForeignKey(Country, related_name='visa_nationality', on_delete=models.CASCADE)
     departure_date = models.DateField()
     visa_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     commission = models.DecimalField(max_digits=10, decimal_places=2, default=0)

@@ -22,7 +22,13 @@
                 </ol>
             </div>
         </div>
-
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
         <form action="{% url 'user_register' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="row">
@@ -101,20 +107,6 @@
                                         <div class="alert alert-danger">{{ form.employee.errors|striptags }}</div>
                                     {% endif %}
                                 </div>
-                            </div>
-                            <div class="row mb-3">
-                                <!-- <div class="col-md-6">
-                                    <label class="form-label">Role</label>
-                                    <select name="role" class="form-select">
-                                        <option value="" selected disabled>Select Role</option>
-                                        {% for role in form.fields.role.queryset %}
-                                            <option value="{{ group.id }}">{{ group.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    {% if form.role.errors %}
-                                        <div class="alert alert-danger">{{ form.role.errors|striptags }}</div>
-                                    {% endif %}
-                                </div> -->
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="true" name="is_admin" id="is_admin">

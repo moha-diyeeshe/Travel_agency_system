@@ -1,0 +1,107 @@
+<!-- templates/audit_trails.html -->
+{% extends 'Dashboard/base.html' %}
+
+{% block title_block %} Audit Logs {% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <div class="page-header">
+            <h1 class="page-title my-auto">Audit Logs</h1>
+            
+        </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-3 d-flex justify-content-between">
+                            <form action="{% url 'audit_trails' %}" method="get" class="input-group w-50">
+                                <input type="text" class="form-control" placeholder="Search by username, action, or module" name="query">
+                                <button class="btn btn-outline-secondary" type="submit">Search</button>
+                            </form>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-nowrap w-100 text-uppercase" id="audit-trails-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date of Action</th>
+                                        <th>User</th>
+                                        <th>Action</th>
+                                        <th>Module</th>
+                                        <th>Path</th>
+                                        <th>Operating System</th>
+                                        <th>Browser</th>
+                                        <th>IP Address</th>
+                                        <th>User Agent</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for log in page_obj %}
+                                    <tr>
+                                        <td>{{ log.date_of_action }}</td>
+                                        <td>{{ log.Username }}</td>
+                                        <td>{{ log.Actions }}</td>
+                                        <td>{{ log.Module }}</td>
+                                        <td>{{ log.path }}</td>
+                                        <td>{{ log.operating_system }}</td>
+                                        <td>{{ log.browser }}</td>
+                                        <td>{{ log.ip_address }}</td>
+                                        <td>{{ log.user_agent }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="9">No audit logs found.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-end">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}&query={{ query }}" tabindex="-1">Previous</a>
+                                    </li>
+                                {% endif %}
+                                
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if num == page_obj.number %}
+                                        <li class="page-item active" aria-current="page">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}&query={{ query }}">{{ num }}</a>
+                                        </li>
+                                    {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}&query={{ query }}">{{ num }}</a>
+                                        </li>
+                                    {% elif num == page_obj.number|add:-3 or num == page_obj.number|add:3 %}
+                                        <li class="page-item">
+                                            <span class="page-link">...</span>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}&query={{ query }}">Next</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

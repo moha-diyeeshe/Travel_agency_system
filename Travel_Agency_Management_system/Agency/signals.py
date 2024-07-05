@@ -9,24 +9,7 @@ from django.db.models.signals import post_save, post_delete
 
 from Users.models import ActivityLog
 
-# @receiver(post_migrate)
-# def create_groups_and_permissions(sender, **kwargs):
-#     admin_group, created = Group.objects.get_or_create(name='Admin')
-#     staff_group, created = Group.objects.get_or_create(name='Staff')
 
-#     # Assign permissions to Admin (all permissions)
-#     admin_permissions = Permission.objects.all()
-#     admin_group.permissions.set(admin_permissions)
-
-#     # Assign permissions to Staff (excluding add and change user)
-#     excluded_permissions = Permission.objects.filter(codename__in=[])
-#     staff_permissions = Permission.objects.exclude(pk__in=excluded_permissions)
-#     staff_group.permissions.set(staff_permissions)
-
-#     admin_group.save()
-#     staff_group.save()
-
-#     print('Successfully created Admin and Staff groups with permissions')
 
 
 

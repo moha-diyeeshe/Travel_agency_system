@@ -10,9 +10,17 @@
 <div class="main-content app-content">
     <div class="container-fluid">
 
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
         <div class="invoice-container">
             <div class="header">
-                <img src="{% static 'assets/logo.jpeg' %}" alt="Company Logo">
+                <img src="{% static 'assets/logo.jpg' %}" alt="Company Logo">
                 <div class="status text-uppercase 
                     {% if status == 'pending' %}
                     text-danger fs-2
@@ -30,20 +38,22 @@
                     Paid
                     {% endif %}
                 </div>
-
             </div>
 
-            <div class="invoice-info">
+            <div class="invoice-info table-responsive">
                 <div>
-                    <strong>Goolwayne Travel Agency</strong><br>
+                    <strong class="text-uppercase">Goolwayne Travel Agency</strong><br>
                     Address TRA-PIANA Mogadishu Somalia<br>
-                    618044914
+                    <strong> Tel: 618044914/ Landline: 846373 </strong>
                 </div>
                 <div class inv-info>
-                    <strong>Customer:</strong> {{ customer_name }}<br>
+                    
                     <strong class="invoice">Invoice #{{ invoice_no }}</strong><br>
+                    <strong>Due Date:</strong>{{due_date}} <br>
+
+                    <strong>Customer:</strong> {{ customer_name }}<br>
                     <strong>customer no :</strong> {{ customer_no }} <br>
-                    <strong>Due Date:</strong>{{due_date}}
+
                 </div>
             </div>
 
@@ -64,50 +74,46 @@
                         <td>{{ booking.supplier |upper }}</td>
                         <td>{{ booking.travel_date|upper }}</td>
                         <td>{{ booking.from_city.name|upper }}-{{ booking.destination.name|upper }}</td>
-                        <td>${{ booking.total_cost }}</td>
+                        <td><b>${{ booking.total_cost }}</b></td>
                     </tr>
                     {% endfor %}
+                    <!-- Summary directly under the Amount column -->
                     <tr class="invoice-summary">
                         <td colspan="1" style="text-align: right;">Salaam Bank:</td>
-                        <td>33752088</td>
-                        <td colspan="4" style="text-align: right;">Subtotal:</td>
-                        <td>${{ subtotal }}</td>
+                        <td>34626049</td>
+                        <td colspan="2" style="text-align: right;"><b>Subtotal:</b></td>
+                        <td><b>${{ subtotal|floatformat:2 }}</b></td>
                     </tr>
                     <tr class="invoice-summary">
                         <td colspan="1" style="text-align: right;">Dahabshiil Bank:</td>
-                        <td>33752088</td>
-                        <td colspan="4" style="text-align: right;">Paid:</td>
-                        <td>${{ partial }}</td>
+                        <td>110111803</td>
+                        <td colspan="2" style="text-align: right;"><b>Paid:</b></td>
+                        <td><b>${{ partial|floatformat:2 }}</b></td>
                     </tr>
                     <tr class="invoice-summary">
                         <td colspan="1" style="text-align: right;">Merchant:</td>
-                        <td>33752088</td>
-                        <td colspan="4" style="text-align: right;">Balance:</td>
-                        <td>${{ remaining }}</td>
+                        <td>*789*627196*$#</td>
+                        <td colspan="2" style="text-align: right;"> <b>Balance:</b></td>
+                        <td><b>${{ remaining |floatformat:2 }}</b></td>
                     </tr>
                     <tr class="invoice-summary">
                         <td colspan="1" style="text-align: right;">Edahab:</td>
-                        <td>33752088</td>
+                        <td>628044914</td>
                         
                     </tr>
-                    <!-- Summary directly under the Amount column -->
-                    <tr class="invoice-summary">
-                        <td colspan="4" style="text-align: right;">Subtotal:</td>
-                        <td>${{ subtotal }}</td>
-                    </tr>
-                    <tr class="invoice-summary">
-                        <td colspan="4" style="text-align: right;">Paid:</td>
-                        <td>${{ partial }}</td>
-                    </tr>
-                    <tr class="invoice-summary">
-                        <td colspan="4" style="text-align: right;">Balance:</td>
-                        <td>${{ remaining }}</td>
-                    </tr>
+                    
+
                 </tbody>
             </table>
-
+            <div class="thank-you-message">
+                <strong>Thank You For Your Business!</strong><br>
+                We respectfully request you to deposit the amount owed to you in the bank accounts of our company.<BR>
+                <strong> <p class="text"> N.B ALL THE ACCOUNTS HAVE THE SAME NAME: GOOLWAYNE TRAVEL AGENCY </p> </strong>
+                </div>
+        </div>
             <div class="no-print">
                 <button onclick="printInvoice()">Print Invoice</button>
+                <button onclick="captureAndShareInvoice()">Send via WhatsApp</button>
             </div>
         </div>
     </div>
@@ -121,4 +127,38 @@
         window.print();
     }
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+<script>
+    function printInvoice() {
+        window.print();
+    }
+
+    function captureAndShareInvoice() {
+        // Get the invoice container element
+        var invoiceElement = document.querySelector('.invoice-container');
+        
+        // Use html2canvas to capture the screenshot
+        html2canvas(invoiceElement, {
+            onrendered: function(canvas) {
+                // Convert the canvas to a data URL
+                var dataUrl = canvas.toDataURL('image/png');
+
+                // Create a download link and click it to start the download
+                var link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = 'invoice.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+
+
+                alert('Screenshot captured. downloaded picture sucessfully.');
+
+
+            }
+        });
+    }
+</script>
+
 {% endblock %}

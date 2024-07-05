@@ -1,0 +1,143 @@
+{% extends 'Dashboard/base.html' %}
+
+{% block title_block %} Error Logs {% endblock %}
+
+{% block content %}
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <div class="page-header">
+            <h1 class="page-title my-auto">Error Logs</h1>
+            
+        </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-3 d-flex justify-content-between">
+                            <form action="{% url 'error_logs' %}" method="get" class="input-group w-50">
+                                <input type="text" class="form-control" placeholder="Search by username, error, or details" name="query">
+                                <button class="btn btn-outline-secondary" type="submit">Search</button>
+                            </form>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-nowrap w-100 text-uppercase" id="errorlogs-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date Recorded</th>
+                                        <th>User</th>
+                                        <th>Description</th>
+                                        <th>Expected Error</th>
+                                        <th>Details</th>
+                                        <th>Line Number</th>
+                                        <th>Field Error</th>
+                                        <th>Browser</th>
+                                        <th>User Agent</th>
+                                        <th>IP Address</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for log in page_obj %}
+                                    <tr>
+                                        <td>{{ log.date_recorded }}</td>
+                                        <td>{{ log.Username }}</td>
+                                        <td>{{ log.Name }}</td>
+                                        <td>{{ log.Expected_error }}</td>
+                                        <td>{{ log.trace_back|truncatechars:50 }} <a href="#" data-bs-toggle="modal" data-bs-target="#detailModal{{ log.id }}">...see more</a></td>
+                                        <td>{{ log.line_number }}</td>
+                                        <td>{{ log.field_error |truncatechars:30 }}</td>
+                                        <td>{{ log.browser }}</td>
+                                        <td>{{ log.user_agent }}</td>
+                                        <td>{{ log.ip_address }}</td>
+                                        <td>
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#detailModal{{ log.id }}">View Details</a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="11">No error logs found.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-end">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}&query={{ query }}" tabindex="-1">Previous</a>
+                                    </li>
+                                {% endif %}
+                                
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if num == page_obj.number %}
+                                        <li class="page-item active" aria-current="page">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}&query={{ query }}">{{ num }}</a>
+                                        </li>
+                                    {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}&query={{ query }}">{{ num }}</a>
+                                        </li>
+                                    {% elif num == page_obj.number|add:-3 or num == page_obj.number|add:3 %}
+                                        <li class="page-item">
+                                            <span class="page-link">...</span>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}&query={{ query }}">Next</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals for each log entry -->
+{% for log in page_obj %}
+<div class="modal fade" id="detailModal{{ log.id }}" tabindex="-1" aria-labelledby="detailModalLabel{{ log.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailModalLabel{{ log.id }}">Error Log Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Date Recorded:</strong> {{ log.date_recorded }}</p>
+                <p><strong>User:</strong> {{ log.Username }}</p>
+                <p><strong>Description:</strong> {{ log.Name }}</p>
+                <p><strong>Expected Error:</strong> {{ log.Expected_error }}</p>
+                <p><strong>Full Details:</strong> {{ log.trace_back|linebreaksbr }}</p>
+                <p><strong>Line Number:</strong> {{ log.line_number }}</p>
+                <p><strong>Field Error:</strong> {{ log.field_error }}</p>
+                <p><strong>Browser:</strong> {{ log.browser }}</p>
+                <p><strong>User Agent:</strong> {{ log.user_agent }}</p>
+                <p><strong>IP Address:</strong> {{ log.ip_address }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type of "button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

@@ -10,10 +10,16 @@
 {% block content %}
 <div class="main-content app-content">
     <div class="container-fluid">
-
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
         <div class="invoice-container">
             <div class="header">
-                <img src="{% static 'assets/logo.jpeg' %}" alt="Company Logo">
+                <img src="{% static 'assets/logo.jpg' %}" alt="Company Logo">
             </div>
 
             <div class="invoice-info">
@@ -28,7 +34,7 @@
                     <strong class="invoice"> Income Statement</strong><br>
                 </div>
             </div>
-            <table class="invoice-table">
+            <table class="invoice-table text-uppercase">
                 <thead>
                     <tr>
                         <th>Description</th>

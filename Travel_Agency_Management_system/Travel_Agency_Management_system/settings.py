@@ -30,7 +30,7 @@ SECRET_KEY = "django-insecure-tt1+i+pr2#!bel)=ij_4g+-4*pb2!g23vh+u(f0wu-0$&-2yb(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.8.100', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -58,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "Users.middleware.AuditMiddleware",
 ]
 
 ROOT_URLCONF = "Travel_Agency_Management_system.urls"
@@ -73,6 +74,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "Users.context_processors.activity_notifications",  # Adjust the path according to your project structure
+
             ],
         },
     },

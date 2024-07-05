@@ -1,11 +1,11 @@
 from django.urls import path
 
-from Agency import context_processors
+from Users import context_processors
+
 from . import views
 
 urlpatterns = [
     path('users/', views.user_list, name='user_list'),
-    path('manage-users/', views.manage_users, name='manage_users'),
     path('edit-user/<int:user_id>/', views.edit_user, name='edit_user'),
     path('edit-permissions/<int:user_id>/', views.edit_permissions, name='user_permissions'),
     path('add-user/', views.user_register, name='user_register'),
@@ -18,6 +18,9 @@ urlpatterns = [
     path('', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
     path('activity-log/', views.activity_log, name='activity_log'),
+    path('dashboard/', context_processors.activity_notifications, name='dashboard'),
+    path('error-logs/', views.error_logs, name='error_logs'),
+    path('audit-trails/', views.audit_trails, name='audit_trails'),
 
 
 ]

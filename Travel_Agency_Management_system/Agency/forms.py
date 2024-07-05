@@ -66,6 +66,13 @@ class PaymentForm(ModelForm):
         fields = ['payment_method', 'paid_amount']
 
 
+
+# class UpdateTransactionForm(forms.ModelForm):
+#     class Meta:
+#         model = Transaction
+#         fields = ['payment_method', 'paid_amount',]
+
+
 class BookingSelectionForm(forms.Form):
     bookings = forms.ModelMultipleChoiceField(
         queryset=TicketBooking.objects.filter(status='pending'),

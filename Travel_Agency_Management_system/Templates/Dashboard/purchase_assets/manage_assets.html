@@ -6,27 +6,26 @@
     <div class="container-fluid">
         <!-- PAGE-HEADER -->
         <div class="page-header">
-            <h1 class="page-title my-auto">Asset List</h1>
+            <h1 class="page-title my-auto text-uppercase">Asset List</h1>
         </div>
         <!-- PAGE-HEADER END -->
-
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
         <!-- Start:: row-1 -->
         <div class="row">
             <div class="col-12">
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
                 <div class="card">
-                    <div class="card-body">
-                        <div class="mb-3 d-flex justify-content-between">
+                    <div class="card-body text-uppercase">
+                        <div class="mb-3 d-flex justify-content-between text-uppercase">
                             <!-- Search functionality -->
                             <form action="{% url 'list_assets' %}" method="get" class="input-group w-50">
-                                <input type="text" class="form-control" placeholder="Search by asset name, purchase date, or user" name="query">
-                                <button class="btn btn-outline-secondary" type="submit">Search</button>
+                                <input type="text" class="form-control text-uppercase" placeholder="Search by asset name, purchase date, or user" name="query" value="{{ query }}">
+                                <button class="btn btn-outline-secondary text-uppercase" type="submit">Search</button>
                             </form>
                             <!-- Add button -->
                             <a href="{% url 'register_asset' %}" class="btn btn-primary btn-sm">
@@ -36,19 +35,19 @@
 
                         <!-- Table -->
                         <div class="table-responsive">
-                            <table class="table table-bordered text-nowrap w-100" id="assetlist-table">
+                            <table class="table table-bordered text-nowrap w-100 text-uppercase" id="assetlist-table">
                                 <thead>
                                     <tr>
                                         <th scope="col">Asset Name</th>
                                         <th scope="col">Purchase Date</th>
                                         <th scope="col">Purchase Price</th>
                                         <th scope="col">Description</th>
-                                        <th scope="col">who registered</th>
+                                        <th scope="col">Who Registered</th>
                                         <th scope="col">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for asset in assets %}
+                                    {% for asset in page_obj %}
                                     <tr>
                                         <td>{{ asset.asset_name }}</td>
                                         <td>{{ asset.purchase_date|date:"Y-m-d" }}</td>
@@ -67,6 +66,37 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- Pagination -->
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-end">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}&query={{ query }}" tabindex="-1">Previous</a>
+                                    </li>
+                                {% endif %}
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                                        <li class="page-item {% if num == page_obj.number %}active{% endif %}">
+                                            <a class="page-link" href="?page={{ num }}&query={{ query }}">{{ num }}</a>
+                                        </li>
+                                    {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}&query={{ query }}">{{ num }}</a>
+                                        </li>
+                                    {% elif num == page_obj.number|add:-3 or num == page_obj.number|add:3 %}
+                                        <li class="page-item">
+                                            <span class="page-link">...</span>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}&query={{ query }}">Next</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
