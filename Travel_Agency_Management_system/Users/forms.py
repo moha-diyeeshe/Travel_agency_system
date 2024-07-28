@@ -20,7 +20,6 @@ class UserRegistrationForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         employee = self.cleaned_data.get('employee')
-
         is_admin = self.cleaned_data.get('is_admin', False)
 
         if commit:
@@ -35,7 +34,6 @@ class UserRegistrationForm(UserCreationForm):
             self.save_m2m()  # Save many-to-many fields if there are any
 
         return user
-
 
 
 class UserUpdateForm(UserChangeForm):

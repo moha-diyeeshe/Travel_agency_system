@@ -22,7 +22,7 @@ from django.contrib.contenttypes.models import ContentType
 
 # Create your views here.
 @login_required
-@permission_required('Agency.add_user', raise_exception=True)
+@permission_required('Users.add_user', raise_exception=True)
 def user_register(request):
     try:
         if request.method == 'POST':
@@ -47,7 +47,7 @@ def user_register(request):
 
 
 @login_required
-@permission_required('Agency.change_user', raise_exception=True)
+@permission_required('Users.change_user', raise_exception=True)
 def edit_user(request, user_id):
     try:
         user = get_object_or_404(User, pk=user_id)
@@ -72,7 +72,7 @@ def edit_user(request, user_id):
 
 
 @login_required
-@permission_required('Agency.view_user', raise_exception=True)
+@permission_required('Users.add_user', raise_exception=True)
 def user_list(request):
     try:
         users = User.objects.all().order_by('-modified_at')  # Sorting users by join date
@@ -134,7 +134,7 @@ def log_action(user, action, description=""):
     )
 
 @login_required
-@permission_required('Agency.add_user', raise_exception=True)
+@permission_required('Users.add_user', raise_exception=True)
 def admin_change_user_password(request, user_id):
     try:
         target_user = get_object_or_404(User, pk=user_id)
@@ -161,7 +161,7 @@ def admin_change_user_password(request, user_id):
 
 
 @login_required
-@permission_required('Agency.change_permission', raise_exception=True)
+@permission_required('Users.change_permission', raise_exception=True)
 def edit_permissions(request, user_id):
     try:
         user = get_object_or_404(User, id=user_id)
@@ -242,7 +242,7 @@ def user_logout(request):
 
 
 @login_required
-@permission_required('User.view_activitylog', raise_exception=True)
+@permission_required('Users.view_activitylog', raise_exception=True)
 def activity_log(request):
     try:
         logs = ActivityLog.objects.all().order_by('-timestamp')  # Ordering by timestamp desc
@@ -361,8 +361,7 @@ def assign_groups(request, user_id):
 
 
 @login_required
-@login_required
-@permission_required('auth.view_errorlogs', raise_exception=True)
+@permission_required('Users.view_errorlogs', raise_exception=True)
 def error_logs(request):
     try:
         query = request.GET.get('query', '')
@@ -392,7 +391,8 @@ def error_logs(request):
 
 
 
-
+@login_required
+@permission_required('Users.view_audittrials', raise_exception=True)
 def audit_trails(request):
     try:
         logs_list = AuditTrials.objects.all().order_by('-date_of_action')

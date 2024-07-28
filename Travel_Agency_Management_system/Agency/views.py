@@ -1004,7 +1004,7 @@ def incomplete_transactions(request):
         # Fetch transactions with a remaining amount greater than 0
         transactions = Transaction.objects.annotate(
             remaining=ExpressionWrapper(F('total_amount') - F('paid_amount'), output_field=DecimalField())
-        ).filter(remaining__gt=0)
+        ).filter(remaining__gt=0).order_by('-transaction_date')
 
         # Calculate the total of all remaining amounts
         total_remaining = transactions.aggregate(total=Sum('remaining'))['total']
@@ -1080,8 +1080,12 @@ def complete_payment(request, transaction_id):
     except Exception as e:
         log_error(request, e)
         messages.error(request, 'An error occurred while processing the payment.')
-        return render(request, 'Dashboard/error_page.html', {'error': str(e)})
-
+        return render(request, 'Dashboard/invoices/ticket_complete_payment.html', {
+                    'transaction': transaction,
+                    'previous_payments': previous_payments,
+                    'payment_form': payment_form,
+                    'remaining_amount': transaction.total_amount - transaction.paid_amount,
+                })
 
 
 
@@ -1155,22 +1159,22 @@ def customer_pending_visa_bookings(request, customer_id):
                     transaction.update_status()
 
                     # Render the invoice as an HTML page
-                    context = {
-                        'customer_name': customer.name,
-                        'customer_no': customer.phone,
-                        'date': transaction.transaction_date.strftime('%d.%m.%Y'),
-                        'invoice_no': transaction.reference_number,
-                        'transaction_type': transaction.transaction_type,
-                        'transaction_no': transaction.id,
-                        'bookings': selected_bookings,
-                        'subtotal': total_amount,
-                        'partial': transaction.paid_amount,
-                        'total': transaction.total_amount,
-                        'remaining_amount': total_amount - transaction.paid_amount,
-                        'path_to_signature': '/path/to/your/signature.png'  # Update with the actual path to the signature
-                    }
+                    # context = {
+                    #     'customer_name': customer.name,
+                    #     'customer_no': customer.phone,
+                    #     'date': transaction.transaction_date.strftime('%d.%m.%Y'),
+                    #     'invoice_no': transaction.reference_number,
+                    #     'transaction_type': transaction.transaction_type,
+                    #     'transaction_no': transaction.id,
+                    #     'bookings': selected_bookings,
+                    #     'subtotal': total_amount,
+                    #     'partial': transaction.paid_amount,
+                    #     'total': transaction.total_amount,
+                    #     'remaining_amount': total_amount - transaction.paid_amount,
+                    #     'path_to_signature': '/path/to/your/signature.png'  # Update with the actual path to the signature
+                    # }
 
-                    return render(request, 'Dashboard/invoices/visa_invoice_template.html', context)
+                    return redirect('view_invoice', invoice_id=transaction.id)
         else:
             booking_form = BookingSelectionForm(transaction_type='visa')
             payment_form = PaymentForm()
@@ -1185,7 +1189,13 @@ def customer_pending_visa_bookings(request, customer_id):
     except Exception as e:
         log_error(request, e)
         messages.error(request, "An error occurred while processing visa bookings.")
-        return render(request, 'Dashboard/error_page.html', {'error': str(e)})
+        return render(request, 'Dashboard/invoices/visa_customer_pending_booking.html', {
+            'customer': customer,
+            'pending_visa_bookings': pending_visa_bookings,
+            'no_pending_bookings': no_pending_bookings,
+            'booking_form': booking_form,
+            'payment_form': payment_form,
+        })
 
 
 
@@ -1602,6 +1612,10 @@ def index(request):
 
         # percentage_change = (revenue_change / last_month_revenues * 100) if last_month_revenues else 0
 
+        commision_change = total_current_month_commission - total_last_month_commission
+
+        commision_percentage_change = (commision_change/total_last_month_commission *100)
+
 
         # the destination of cities
         top_ticket_destinations = TicketBooking.objects.filter(
@@ -1657,6 +1671,7 @@ def index(request):
             'months':months,
             'expenses_values':expenses_values,
             'revenues_values':revenues_values,
+            'commision_percentage_change':commision_percentage_change,
 
 
         }

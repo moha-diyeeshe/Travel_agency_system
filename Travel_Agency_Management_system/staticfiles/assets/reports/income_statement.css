@@ -1,0 +1,65 @@
+body {
+    font-family: 'Arial', sans-serif;
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.invoice-container {
+    width: 80%; /* Adjust based on your layout */
+    margin: auto; /* Center the container */
+    border: 1px solid #ccc;
+    padding: 20px;
+    background: #FFF;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.header, .invoice-info, .no-print {
+    text-align: center;
+}
+
+.header img {
+    height: 80px; /* Adjust based on your preference */
+}
+
+.invoice-table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+}
+
+.invoice-table th, .invoice-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.print-button {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    .invoice-container, .invoice-container * {
+        visibility: visible;
+    }
+
+    .no-print {
+        display: none;
+    }
+
+    .invoice-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+}
