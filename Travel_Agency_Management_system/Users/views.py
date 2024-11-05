@@ -407,3 +407,32 @@ def audit_trails(request):
         messages.error(request, "An error occurred while trying to display audit trails.")
         # Redirect or render a specific template if the error affects the page rendering
         return render(request, 'Dashboard/logs/audit_trails.html', {'page_obj': page_obj})
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def custom_404(request, exception):
+    return render(request, 'Dashboard/errors/404.html', status=404)
+
+def custom_500(request):
+    return render(request, 'Dashboard/errors/500.html', status=500)
+
+
+
+
+def custom_403(request, exception):
+    return render(request, 'Dashboard/errors/403.html', status=403)
+

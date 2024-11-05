@@ -1603,19 +1603,25 @@ def index(request):
 
         total_customers = Customer.objects.all().count
 
-        # this_month_revenue = total_current_month_fare + total_current_month_commission
+        this_month_revenue = total_current_month_fare + total_current_month_commission
 
-        # last_month_revenue = total_last_month_commission + total_last_month_fare
+        last_month_revenue = total_last_month_commission + total_last_month_fare
 
 
-        # revenue_change = this_month_revenue - last_month_revenue
+        revenue_change = this_month_revenue - last_month_revenue
 
-        # percentage_change = (revenue_change / last_month_revenues * 100) if last_month_revenues else 0
+        percentage_change = (revenue_change / last_month_revenues * 100) if last_month_revenues else 0
 
-        commision_change = total_current_month_commission - total_last_month_commission
+        if total_last_month_commission > Decimal(0):
+            commision_change = total_current_month_commission - total_last_month_commission
+            commision_percentage_change = (commision_change / total_last_month_commission * 100)
+        else:
+        # Handle the case where there is no previous commission to compare against
+            commision_change = total_current_month_commission - total_last_month_commission
+            # Set percentage change to 0 or another appropriate value
+            commision_percentage_change = Decimal(0) 
 
-        commision_percentage_change = (commision_change/total_last_month_commission *100)
-
+        
 
         # the destination of cities
         top_ticket_destinations = TicketBooking.objects.filter(
@@ -1681,7 +1687,7 @@ def index(request):
     except Exception as e:
         log_error(request, e)
         messages.error(request, "An error occurred while generating the dashboard. Please contact support.")
-        return render(request, 'Dashboard/error_page.html')
+        return render(request, 'Dashboard/index.html',status=500)
 
 
 # def homepage(request):

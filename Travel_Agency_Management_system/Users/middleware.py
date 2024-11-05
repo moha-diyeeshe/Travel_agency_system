@@ -1,5 +1,7 @@
 # your_app/middleware.py
 
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils.deprecation import MiddlewareMixin
 
 from Users.utils import log_error
@@ -32,3 +34,23 @@ class AuditMiddleware(MiddlewareMixin):
         if x_forwarded_for:
             return x_forwarded_for.split(',')[0]
         return request.META.get('REMOTE_ADDR')
+    
+
+
+
+
+
+class LoginRequiredMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+        self.login_url = reverse('login')  # Get the URL for the login page by its name
+
+    def __call__(self, request):
+        # Check if the user is not authenticated and they are not already on the login page
+        if not request.user.is_authenticated and request.path_info != self.login_url:
+            # Redirect to login with the original requested URL
+            return redirect(f"{self.login_url}?next={request.path_info}")
+
+        # Proceed to the requested page if authenticated or if on the login page
+        response = self.get_response(request)
+        return response

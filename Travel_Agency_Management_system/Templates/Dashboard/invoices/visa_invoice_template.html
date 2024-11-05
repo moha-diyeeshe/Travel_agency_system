@@ -55,6 +55,7 @@
             <table class="invoice-table">
                 <thead>
                     <tr>
+                        <th>No</th>
                         <th>Passenger</th>
                         <th>Country</th>
                         <th>Issue Date</th>
@@ -64,6 +65,7 @@
                 <tbody>
                     {% for booking in bookings %}
                     <tr>
+                        <td>{{ forloop.counter }}</td>
                         <td>{{ booking.name|upper }}</td>
                         <td>{{ booking.country |upper }}</td>
                         <td>{{ booking.date_created|date:"Y-m-d" }}</td>
@@ -72,28 +74,44 @@
                     {% endfor %}
                     <!-- Summary directly under the Amount column -->
                     <tr class="invoice-summary">
-                        <td colspan="1" style="text-align: right;">Salaam Bank:</td>
-                        <td>34626049</td>
-                        <td colspan="1" style="text-align: right;"><strong>Subtotal:</strong></td>
+                        
+                        <td colspan="4" style="text-align: right;"><strong>Subtotal:</strong></td>
                         <td><b>${{ subtotal }}</b></td></strong>
                     </tr>
                     <tr class="invoice-summary">
-                        <td colspan="1" style="text-align: right;">Dahabshiil Bank:</td>
-                        <td>110111803</td>
-                        <td colspan="1" style="text-align: right;"> <b>Paid:</b></td>
+                        
+                        <td colspan="4" style="text-align: right;"> <b>Paid:</b></td>
                         <td><b>${{ partial }}</b></td>
                     </tr>
                     <tr class="invoice-summary">
-                        <td colspan="1" style="text-align: right;">Merchant:</td>
-                        <td>*789*627196*$#</td>
-                        <td colspan="1" style="text-align: right;"><b>Balance:</b></td>
+                        
+                        <td colspan="4" style="text-align: right;"><b>Balance:</b></td>
                         <td><b>${{ remaining }}</b></td>
                     </tr>
                     <tr class="invoice-summary">
-                        <td colspan="1" style="text-align: right;">Edahab:</td>
-                        <td>628044914</td>
+                       
                         
                     </tr>
+
+                    <tr class="invoice-summary">
+                        <td colspan="2" style="text-align: right;">Salaam Bank:</td>
+                        <td>34626049</td>
+                    </tr>
+                    <tr class="invoice-summary">
+                        <td colspan="2" style="text-align: right;">Dahabshiil Bank:</td>
+                        <td>110111803</td>
+                    </tr>
+                    <tr class="invoice-summary">
+                        <td colspan="2" style="text-align: right;">Premier Bank:</td>
+                        <td>0106059301840011</td>
+                    </tr>
+                    <tr class="invoice-summary">
+                        <td colspan="2" style="text-align: right;">Edahab:</td>
+                        <td>628044914</td>
+                    </tr>
+
+                        
+
                     
 
                 </tbody>
@@ -151,6 +169,9 @@
             }
         });
     }
+
+
+
 </script>
 
 {% endblock %}

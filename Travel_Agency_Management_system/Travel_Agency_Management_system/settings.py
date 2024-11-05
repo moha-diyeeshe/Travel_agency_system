@@ -28,7 +28,7 @@ STATIC_DIR = os.path.join(BASE_DIR,"Static")
 SECRET_KEY = "django-insecure-tt1+i+pr2#!bel)=ij_4g+-4*pb2!g23vh+u(f0wu-0$&-2yb("
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['192.168.8.100', 'localhost', '127.0.0.1']
 
@@ -59,6 +59,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "Users.middleware.AuditMiddleware",
+    "Users.middleware.LoginRequiredMiddleware",
 ]
 
 ROOT_URLCONF = "Travel_Agency_Management_system.urls"
