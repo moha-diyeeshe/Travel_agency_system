@@ -21,6 +21,7 @@ urlpatterns = [
     path('dashboard/', context_processors.activity_notifications, name='dashboard'),
     path('error-logs/', views.error_logs, name='error_logs'),
     path('audit-trails/', views.audit_trails, name='audit_trails'),
+    path('user/<int:user_id>/toggle-active/', views.toggle_user_active, name='toggle_user_active'),
 
 
 ]

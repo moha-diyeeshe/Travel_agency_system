@@ -28,9 +28,9 @@ STATIC_DIR = os.path.join(BASE_DIR,"Static")
 SECRET_KEY = "django-insecure-tt1+i+pr2#!bel)=ij_4g+-4*pb2!g23vh+u(f0wu-0$&-2yb("
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.8.100', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -96,12 +96,7 @@ DATABASES = {
 }
 
 
-handler400 = 'Agency.views.error_400'
-handler401 = 'Agency.views.error_401'
-handler403 = 'Agency.views.error_403'
-handler404 = 'Agency.views.error_404'
-handler500 = 'Agency.views.error_500'
-handler503 = 'Agency.views.error_503'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

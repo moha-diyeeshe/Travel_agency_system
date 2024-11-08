@@ -3,6 +3,7 @@ from django.shortcuts import render,get_object_or_404,redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
 from django.contrib import messages
+from django.urls import reverse
 from Agency.views import log_action
 from Users.forms import GroupForm, UserGroupsForm, UserRegistrationForm, UserUpdateForm
 from Users.models import ActivityLog, AuditTrials, ErrorLogs, User
@@ -12,6 +13,9 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import Group, Permission
 from django.db.models import Q
+
+from django.contrib.sessions.models import Session
+
 
 from django.core.paginator import Paginator
 
@@ -148,8 +152,10 @@ def admin_change_user_password(request, user_id):
             else:
                 target_user.set_password(new_password)
                 target_user.save()
+                Session.objects.filter(session_key__in=target_user.get_session_auth_hash()).delete()
                 messages.success(request, f"Password for {target_user.username} has been updated.")
-                log_action(target_user, 'password changed', request.user, f"Password for {target_user.username} successfully changed.")
+                log_action( target_user,  'password changed',  f"Password changed by {request.user.username}: Password for {target_user.username} successfully changed.")
+                update_session_auth_hash(request, target_user)
                 return redirect('user_list')  # Redirect to a page listing all users
 
         return render(request, 'Dashboard/users/admin_change_password.html', {'user': target_user})
@@ -206,15 +212,14 @@ def user_login(request):
                 user = authenticate(request, username=username, password=password)
                 if user is not None:
                     login(request, user)
+                    # Assuming `user` is the User instance of the successfully logged-in user.
                     log_action(user, 'login', f"Successful login for {user.username}")
+
 
                     return redirect('index')  # Redirect to the home page or another page
                 else:
-                    log_action(None, 'failed login', f"Failed login attempt for {username}")
                     messages.error(request, 'Invalid username or password.')
             else:
-                log_action(None, 'failed login', f"Failed login attempt for {username}")
-
                 messages.error(request, 'Invalid username or password.')
         else:
             form = AuthenticationForm()
@@ -435,4 +440,24 @@ def custom_500(request):
 
 def custom_403(request, exception):
     return render(request, 'Dashboard/errors/403.html', status=403)
+
+
+
+
+
+
+@login_required
+@permission_required('auth.change_user')
+def toggle_user_active(request, user_id):
+    try:
+        user = get_object_or_404(User, id=user_id)
+        user.is_active = not user.is_active  # Toggle the is_active field
+        user.save()
+        messages.success(request, f"User {'activated' if user.is_active else 'deactivated'} successfully.")
+        return redirect(reverse('user_management'))
+    except Exception as e:
+        log_error(request,e)
+        messages.error(request, "An error occured while trying to activate user")
+        return redirect('index')
+
 

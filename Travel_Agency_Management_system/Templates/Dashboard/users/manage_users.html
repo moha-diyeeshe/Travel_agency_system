@@ -8,6 +8,7 @@
             <h1 class="page-title my-auto">User Management</h1>
             <div>
                 <button type="button" class="btn btn-primary" onclick="location.href='{% url 'user_register' %}'">Add New User</button>
+                
             </div>
         </div>
         
@@ -27,7 +28,6 @@
                             <table class="table table-bordered text-nowrap w-100" id="user-list-table">
                                 <thead>
                                     <tr>
-                                        <th class="align-top border-bottom-0 wd-5"></th>
                                         <th class="border-bottom-0 w-20">Username</th>
                                         <th class="border-bottom-0 w-15">Full Name</th>
                                         <th class="border-bottom-0 w-15"> Email</th>
@@ -39,9 +39,6 @@
                                 <tbody>
                                     {% for user in page_obj %}
                                     <tr>
-                                        <td class="align-middle">
-                                            <input type="checkbox" class="form-check-input">
-                                        </td>
                                         <td class="align-middle ">{{ user.username }}</td>
                                         <td class="align-middle text-uppercase">{{ user.get_full_name }}</td>
                                         <td class="align-middle text-uppercase">{{ user.email }}</td>
@@ -50,9 +47,17 @@
                                         <td class="align-middle text-uppercase">{{ user.date_joined }}</td>
                                         <td class="align-middle">
                                             <div class="btn-group align-top">
-                                                <button class="btn btn-sm btn-outline-light btn-svg text-uppercase" type="button" onclick="location.href='{% url 'edit_user' user.id %}'"><i class="fe fe-edit me-2 d-inline-flex"></i>Edit</button>
+                                                <button class="btn btn-sm btn-outline-light btn-svg text-uppercase" type="button" onclick="location.href='{% url 'edit_user' user.id %}'"><i class="fe fe-edit me-2 d-inline-flex"></i></button>
                                                 <button class="btn btn-sm btn-outline-light btn-svg text-uppercase" type="button" onclick="location.href='{% url 'assign_groups_to_user' user.id %}'"><i class="bi bi-person"></i>Assign group</button>
                                                 <button class="btn btn-sm btn-outline-light btn-svg text-uppercase" type="button" onclick="location.href='{% url 'user_permissions' user.id %}'"><i class="bi bi-shield-lock"></i>Give permission</button>
+                                                <button class="btn btn-sm btn-outline-light btn-svg text-uppercase" type="button" 
+                                                onclick="location.href='{% url 'toggle_user_active' user.id %}'">
+                                                {% if user.is_active %}
+                                                    <i class="bi bi-x-circle"></i> Deactivate
+                                                {% else %}
+                                                    <i class="bi bi-check-circle "></i> Activate
+                                                {% endif %}
+                                            </button>
                                             </div>
                                         </td>
                                     </tr>
