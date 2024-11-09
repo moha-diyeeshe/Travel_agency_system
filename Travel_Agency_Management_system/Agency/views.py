@@ -1915,7 +1915,7 @@ def departure_report(request):
         search_query = request.GET.get('search', '')
         departure_date = request.GET.get('departure_date', '')  # Updated to match form field name
 
-        departures = TicketBooking.objects.all()
+        departures = TicketBooking.objects.all().order_by('-travel_date')
 
         if search_query:
             departures = departures.filter(destination__name__icontains=search_query)
