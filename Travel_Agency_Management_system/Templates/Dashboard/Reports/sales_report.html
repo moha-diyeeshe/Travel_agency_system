@@ -39,7 +39,7 @@
 
         <div class="invoice-container">
             <div class="header">
-                <img src="{% static 'assets/logo.jpeg' %}" alt="Company Logo">
+                <img src="{% static 'assets/logo.jpg' %}" alt="Company Logo">
             </div>
 
             <div class="invoice-info">
@@ -73,7 +73,7 @@
                         <td>{{ forloop.counter }}</td>
                         <td>{{ transaction.customer__name }}</td>  <!-- Ensure this matches the key name in the context -->
                         <td>{{ transaction.transaction_type }}</td>
-                        <td>${{ transaction.date }}</td>
+                        <td>{{ transaction.date }}</td>
                         <td>${{ transaction.amount }}</td>
                         <td>{{ transaction.user__username }}</td> 
                     </tr>
