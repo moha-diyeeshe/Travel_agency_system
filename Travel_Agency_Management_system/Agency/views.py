@@ -1611,10 +1611,12 @@ def index(request):
         revenue_change = this_month_revenue - last_month_revenue
 
         percentage_change = (revenue_change / last_month_revenues * 100) if last_month_revenues else 0
+        percentage_change = min(percentage_change, 100)
 
         if total_last_month_commission > Decimal(0):
             commision_change = total_current_month_commission - total_last_month_commission
             commision_percentage_change = (commision_change / total_last_month_commission * 100)
+            commision_percentage_change = min(percentage_change, 100)
         else:
         # Handle the case where there is no previous commission to compare against
             commision_change = total_current_month_commission - total_last_month_commission
